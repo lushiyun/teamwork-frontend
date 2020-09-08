@@ -1,26 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from 'react-router-dom'
-import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
 
 import { Navbar } from './app/Navbar'
 import { LandingPage } from './app/LandingPage'
+import { Box } from '@material-ui/core'
 
 function App() {
   return (
     <Router>
-      <Grid container direction="column" style={{ minHeight: '100vh' }}>
-        <Grid item>
-          <Navbar />
-        </Grid>
-        <Grid item>
-          <LandingPage />
-        </Grid>
-      </Grid>
+      <Box style={{ minHeight: '100vh' }}>
+        <Navbar />
+        <LandingPage />
+      </Box>
     </Router>
   )
 }

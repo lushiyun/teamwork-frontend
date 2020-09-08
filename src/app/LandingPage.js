@@ -1,8 +1,9 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { CssBaseline, Grid, Typography, Button, Box } from '@material-ui/core'
+import { Grid, Typography, Button, Box } from '@material-ui/core'
 
 import introPhoto from './Work-together.png'
+import LoginButton from '../features/users/LoginButton'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +34,6 @@ export const LandingPage = () => {
 
   return (
     <Grid container component="main" className={classes.root} spacing={0}>
-      <CssBaseline />
       <Grid container item xs={12} sm={6} direction="column" justify="center">
         <Box maxWidth="450px" alignSelf="center">
           <Typography variant="h2">Team Work</Typography>
@@ -53,9 +53,7 @@ export const LandingPage = () => {
             spacing={2}
             style={{ marginTop: '25px' }}>
             <Grid item>
-              <Button color="secondary" variant="contained">
-                Sign Up
-              </Button>
+              <LoginButton text={'Sign Up'}></LoginButton>
             </Grid>
             <Grid item>
               <Button color="secondary" variant="contained">

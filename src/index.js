@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { Auth0Provider } from '@auth0/auth0-react'
-import { ThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider, CssBaseline } from '@material-ui/core'
 
 import App from './App'
 import store from './app/store'
@@ -15,10 +15,11 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <Auth0Provider
-        domain={domain}
-        clientId={clientId}
+        domain="dev-9j7h-fth.us.auth0.com"
+        clientId="mR3ddfUdwjh57rnOzcUg2vNKkLw0qSi0"
         redirectUri={window.location.origin}>
         <ThemeProvider theme={theme}>
+          <CssBaseline />
           <App />
         </ThemeProvider>
       </Auth0Provider>

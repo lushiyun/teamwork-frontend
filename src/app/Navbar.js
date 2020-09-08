@@ -2,7 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core'
+import { AppBar, Toolbar, Typography } from '@material-ui/core'
+
+import LoginButton from '../features/users/LoginButton'
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -21,7 +23,7 @@ export const Navbar = () => {
         <Typography className={classes.logo} variant="h5">
           TeamWork.
         </Typography>
-        <Button variant="outlined">Log In</Button>
+        <LoginButton text={'Log In'} />
       </Toolbar>
     </AppBar>
   )
