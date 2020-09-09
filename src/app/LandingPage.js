@@ -3,7 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Typography, Button, Box } from '@material-ui/core'
 
 import introPhoto from './Work-together.png'
-import LoginButton from '../features/users/LoginButton'
+
+import SignupButton from '../features/user/SignupButton'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,10 +54,10 @@ export const LandingPage = () => {
             spacing={2}
             style={{ marginTop: '25px' }}>
             <Grid item>
-              <LoginButton text={'Sign Up'}></LoginButton>
+              <SignupButton />
             </Grid>
             <Grid item>
-              <Button color="secondary" variant="contained">
+              <Button size="large" variant="contained" color="primary">
                 Watch the Demo
               </Button>
             </Grid>

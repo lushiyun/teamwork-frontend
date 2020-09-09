@@ -8,10 +8,10 @@ const titleFont = {
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#B3C100',
+      main: '#34675c',
     },
     secondary: {
-      main: '#34675c',
+      main: '#B3C100',
     },
   },
   typography: {

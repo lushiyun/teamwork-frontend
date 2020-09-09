@@ -1,29 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 
-import { makeStyles } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Typography } from '@material-ui/core'
 
-import LoginButton from '../features/users/LoginButton'
-
-const useStyles = makeStyles((theme) => ({
-  logo: {
-    flexGrow: 1,
-    fontFamily: 'Playfair Display, serif',
-    fontWeight: '700',
-  },
-}))
+import LoginButton from '../features/user/LoginButton'
+import LogoutButton from '../features/user/LogoutButton'
 
 export const Navbar = () => {
-  const classes = useStyles()
+  const { isAuthenticated } = useAuth0()
 
   return (
     <AppBar position="fixed" elevation={0} color="transparent">
       <Toolbar>
-        <Typography className={classes.logo} variant="h5">
+        <Typography variant="h5" style={{ flexGrow: '1' }}>
           TeamWork.
         </Typography>
-        <LoginButton text={'Log In'} />
+        {isAuthenticated ? <LogoutButton /> : <LoginButton />}
       </Toolbar>
     </AppBar>
   )
