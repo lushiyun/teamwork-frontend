@@ -2,10 +2,10 @@ import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react'
 
-import { Navbar } from './static/Navbar'
+import Nav from './app/Nav'
 import { LandingPage } from './app/LandingPage'
-import { TeamsList } from './features/teams/TeamsList'
-import LoadingBackdrop from './static/LoadingBackdrop'
+import TeamsList from './features/teams/TeamsList'
+import LoadingBackdrop from './app/LoadingBackdrop'
 
 const AuthenticatedRoute = ({ component, ...args }) => (
   <Route
@@ -25,10 +25,11 @@ const App = () => {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      <Navbar />
+      <Nav />
       <React.Fragment>
         <Switch>
-          <AuthenticatedRoute path="/" component={TeamsList} />
+        {/* TODO */}
+          <Route path="/dashboard" component={TeamsList} /> 
           <Route exact path="/" component={LandingPage} />
           <Redirect from="*" to="/" />
         </Switch>

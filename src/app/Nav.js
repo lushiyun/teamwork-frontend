@@ -1,14 +1,23 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
-
-import { AppBar, Toolbar, Typography } from '@material-ui/core'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
 
 import LoginButton from '../features/user/LoginButton'
-import LogoutButton from '../features/user/LogoutButton'
+import Logo from './Logo'
+import AuthenticatedNav from './AuthenticatedNav'
 
-export const Navbar = () => {
+const Nav = () => {
   const { isAuthenticated } = useAuth0()
+
+  console.log(isAuthenticated)
+
+  //TODO
+
+  // if (isAuthenticated) {
+  return <AuthenticatedNav />
+  // }
 
   return (
     <AppBar position="fixed" elevation={0} color="transparent">
@@ -16,8 +25,9 @@ export const Navbar = () => {
         <Typography variant="h5" style={{ flexGrow: '1' }}>
           TeamWork.
         </Typography>
-        {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+        <LoginButton />
       </Toolbar>
     </AppBar>
   )
 }
+export default Nav

@@ -6,7 +6,7 @@ const LoginButton = () => {
   const { loginWithRedirect } = useAuth0()
 
   return (
-    <Button size="large" variant="outlined" onClick={loginWithRedirect}>
+    <Button size="medium" variant="outlined" onClick={loginWithRedirect}>
       Log In
     </Button>
   )
