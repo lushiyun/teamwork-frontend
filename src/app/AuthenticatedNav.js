@@ -1,21 +1,30 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
+import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core'
+import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
 import SearchBar from '../utils/SearchBar'
 import LogoutButton from '../features/user/LogoutButton'
+import { drawerWidth } from './TeamsDrawer'
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
-  gradientBackground: {
+  appBar: {
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
     background:
       'linear-gradient(125deg, rgba(76,181,245,1) 0%, rgba(179,193,0,1) 100%)',
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
+  logo: {
+    marginRight: theme.spacing(1),
   },
   sectionDesktop: {
     display: 'none',
@@ -23,32 +32,43 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
     },
   },
+  grow: {
+    flexGrow: 1,
+  },
 }))
 
-const AuthenticatedNav = () => {
+const AuthenticatedNav = ({ handleDrawerToggle }) => {
   const classes = useStyles()
 
   return (
-    <div className={classes.grow}>
-      <AppBar position="sticky" className={classes.gradientBackground}>
-        <Toolbar>
-          <Typography variant="h5">TeamWork.</Typography>
-          <SearchBar />
-          <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            {/* TODO */}
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-haspopup="true"
-              color="inherit">
-              <AccountCircle />
-            </IconButton>
-            <LogoutButton />
-          </div>
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar position="fixed" className={classes.appBar}>
+      <Toolbar>
+        <IconButton
+          edge="start"
+          color="inherit"
+          className={classes.menuButton}
+          aria-label="menu"
+          onClick={handleDrawerToggle}>
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h5" className={classes.logo}>
+          TeamWork.
+        </Typography>
+        <SearchBar />
+        <div className={classes.grow} />
+        <div className={classes.sectionDesktop}>
+          {/* TODO */}
+          <IconButton
+            edge="end"
+            aria-label="account of current user"
+            aria-haspopup="true"
+            color="inherit">
+            <AccountCircle />
+          </IconButton>
+          <LogoutButton />
+        </div>
+      </Toolbar>
+    </AppBar>
   )
 }
 

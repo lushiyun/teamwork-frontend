@@ -1,57 +1,48 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react'
+import { useAuth0 } from '@auth0/auth0-react'
+
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 
 import Nav from './app/Nav'
 import AuthenticatedNav from './app/AuthenticatedNav'
-import SideBar from './app/SideBar'
+import TeamsDrawer from './app/TeamsDrawer'
 import LandingPage from './app/LandingPage'
 import LoadingBackdrop from './app/LoadingBackdrop'
 import PlaceHolder from './app/PlaceHolder'
 import TeamsGrid from './features/teams/TeamsGrid'
 import AddTeamForm from './features/teams/AddTeamForm'
+import AuthenticatedRoute from './AuthenticatedRoute'
 
-const AuthenticatedRoute = ({ component, ...args }) => (
-  <Route
-    component={withAuthenticationRequired(component, {
-      onRedirecting: () => <LoadingBackdrop />,
-    })}
-    {...args}
-  />
-)
+const useStyles = makeStyles((theme) => ({
+  toolbar: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+}))
 
-const App = () => {
-  const { isLoading, isAuthenticated } = useAuth0()
+const App = (props) => {
+  const classes = useStyles()
+  const { window } = props
+  const [open, setOpen] = useState(false)
 
-  if (isLoading) {
-    return <LoadingBackdrop />
-  }
+  const container =
+    window !== undefined ? () => window().document.body : undefined
 
-  // const renderedConstantComponents = () => {
-  //   if (isAuthenticated) {
-  //     return (
-  //       <React.Fragment>
-  //         <AuthenticatedNav />
-  //         <SideBar />
-  //       </React.Fragment>
-  //     )
-  //   }
-  //   return <Nav />
-  // }
+  const handleDrawerToggle = () => setOpen(!open)
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* {renderedConstantComponents()} */}
-      <AuthenticatedNav />
-      <main style={{ height: '100%', display: 'flex' }}>
-        <SideBar />
-        <Switch>
-          <Route path="/dashboard" component={PlaceHolder} />
-          <Route exact path="/" component={LandingPage} />
-          <Route exact path="/teams" component={TeamsGrid} />
-          <Route exact path="/teams/new" component={AddTeamForm} />
-          <Redirect from="*" to="/" />
-        </Switch>
+    <div style={{ display: 'flex' }}>
+      <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
+      <TeamsDrawer
+        handleDrawerToggle={handleDrawerToggle}
+        container={container}
+        open={open}
+      />
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <TeamsGrid />
       </main>
     </div>
   )

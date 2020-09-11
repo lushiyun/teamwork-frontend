@@ -16,7 +16,7 @@ const TeamListItem = (props) => {
         alt={team.name}
         style={{ marginRight: '1rem' }}
       />
-      <ListItemText primary={team.name} />
+      <ListItemText primary={team.name} noWrap />
       <MoreHorizIcon />
     </ListItem>
   )
