@@ -6,6 +6,9 @@ const titleFont = {
 }
 
 const theme = createMuiTheme({
+  typography: {
+    fontFamily: 'Open Sans, sans-serif',
+  },
   palette: {
     primary: {
       main: '#34675c',

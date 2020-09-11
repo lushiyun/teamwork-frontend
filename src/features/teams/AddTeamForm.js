@@ -1,15 +1,24 @@
-import {
-  createEntityAdapter,
-  createSlice,
-  createAsyncThunk,
-  createSelector,
-} from '@reduxjs/toolkit'
+import React, { useState } from 'react'
 
-const teamsAdapter = createEntityAdapter()
+const AddTeamForm = () => {
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [query, setQuery] = useState('')
+  const [open, setOpen] = useState(false)
 
-const initialState = teamsAdapter.getInitialState({
-  status: 'idle',
-  error: null,
-})
+  const handleNameChange = (e) => setName(e.target.value)
+  const handleDescriptionChange = (e) => setDescription(e.target.value)
+  const handleQueryChange = (e) => setQuery(e.target.value)
 
-export const fetchTeams = createAsyncThunk()
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  return <div></div>
+}
+
+export default AddTeamForm

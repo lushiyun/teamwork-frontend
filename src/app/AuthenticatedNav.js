@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
 import SearchBar from '../utils/SearchBar'
-import MenuPopup from '../utils/MenuPopup'
+import LogoutButton from '../features/user/LogoutButton'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -26,17 +26,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const AuthenticatedNav = () => {
-  const menuId = 'Profile Menu Popup'
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = useState(null)
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
 
   return (
     <div className={classes.grow}>
-      <AppBar elevation={0} className={classes.gradientBackground}>
+      <AppBar position="sticky" className={classes.gradientBackground}>
         <Toolbar>
           <Typography variant="h5">TeamWork.</Typography>
           <SearchBar />
@@ -46,16 +40,14 @@ const AuthenticatedNav = () => {
             <IconButton
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
               color="inherit">
               <AccountCircle />
             </IconButton>
+            <LogoutButton />
           </div>
         </Toolbar>
       </AppBar>
-      <MenuPopup menuId={menuId} />
     </div>
   )
 }

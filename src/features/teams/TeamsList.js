@@ -1,68 +1,67 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+
+import { List, ListSubheader, Fab } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add'
+import ListIcon from '@material-ui/icons/List'
 import { makeStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import Divider from '@material-ui/core/Divider'
-import InboxIcon from '@material-ui/icons/Inbox'
-import DraftsIcon from '@material-ui/icons/Drafts'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
+
+import TeamListItem from './TeamListItem'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    height: '100%',
-    backgroundColor: theme.palette.background.paper,
+  addFab: {
+    position: 'sticky',
+    bottom: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 }))
 
-export default function SelectedListItem() {
+const TeamsList = () => {
   const classes = useStyles()
+  const teams = useSelector((state) => state.teams)
   const [selectedIndex, setSelectedIndex] = useState(1)
 
   const handleListItemClick = (e, index) => {
     setSelectedIndex(index)
   }
 
+  const handleAddTeamClick = (e) => {}
+
+  const renderedTeams = () =>
+    teams.map((team, index) => (
+      <TeamListItem
+        team={team}
+        index={index}
+        selectedIndex={selectedIndex}
+        handleListItemClick={handleListItemClick}
+      />
+    ))
+
   return (
-    <div className={classes.root}>
-      <List component="nav" aria-label="main mailbox folders">
-        <ListItem
-          button
-          selected={selectedIndex === 0}
-          onClick={(event) => handleListItemClick(event, 0)}>
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="Inbox" />
-        </ListItem>
-        <ListItem
-          button
-          selected={selectedIndex === 1}
-          onClick={(event) => handleListItemClick(event, 1)}>
-          <ListItemIcon>
-            <DraftsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Drafts" />
-        </ListItem>
-      </List>
-      <Divider />
-      <List component="nav" aria-label="secondary mailbox folder">
-        <ListItem
-          button
-          selected={selectedIndex === 2}
-          onClick={(event) => handleListItemClick(event, 2)}>
-          <ListItemText primary="Trash" />
-        </ListItem>
-        <ListItem
-          button
-          selected={selectedIndex === 3}
-          onClick={(event) => handleListItemClick(event, 3)}>
-          <ListItemText primary="Spam" />
-        </ListItem>
-      </List>
-    </div>
+    <List
+      component="nav"
+      aria-label="teams list"
+      subheader={
+        <ListSubheader component="div" id="list-subheader">
+          Teams
+        </ListSubheader>
+      }>
+      {renderedTeams()}
+      <div className={classes.addFab}>
+        <Fab color="primary" aria-label="add" style={{ marginRight: '1rem' }}>
+          <AddIcon />
+        </Fab>
+        <Link to="/teams">
+          <Fab color="secondary" aria-label="view index">
+            <ListIcon />
+          </Fab>
+        </Link>
+      </div>
+    </List>
   )
 }
+
+export default TeamsList

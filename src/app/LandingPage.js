@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const LandingPage = () => {
+const LandingPage = () => {
   const classes = useStyles()
 
   return (
@@ -76,3 +76,5 @@ export const LandingPage = () => {
     </Grid>
   )
 }
+
+export default LandingPage
