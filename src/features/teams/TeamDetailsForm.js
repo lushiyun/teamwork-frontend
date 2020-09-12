@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 
 const TeamDetailsForm = ({
@@ -7,9 +7,37 @@ const TeamDetailsForm = ({
   handleNameChange,
   handleDescriptionChange,
 }) => {
+  const [nameError, setNameError] = useState(false)
+  const [descError, setDescError] = useState(false)
+  const [nameErrMsg, setNameErrMsg] = useState(null)
+  const [descErrMsg, setDescErrMsg] = useState(null)
+
+  const handleNameValidation = () => {
+    if (name.length === 0) {
+      setNameError(true)
+      setNameErrMsg('Name is required')
+    } else {
+      setNameError(false)
+      setNameError(null)
+    }
+  }
+
+  const handleDescValidation = () => {
+    if (description.length === 0) {
+      setDescError(true)
+      setDescErrMsg('Description is required')
+    } else {
+      setDescError(false)
+      setDescError(null)
+    }
+  }
+
   return (
     <React.Fragment>
       <TextField
+        autoComplete="false"
+        error={nameError}
+        helperText={nameErrMsg}
         autoFocus
         required
         id="team-name-input"
@@ -18,9 +46,16 @@ const TeamDetailsForm = ({
         margin="normal"
         fullWidth
         value={name}
-        onChange={handleNameChange}
+        onChange={(e) => {
+          handleNameValidation()
+          handleNameChange(e)
+        }}
+        onBlur={handleNameValidation}
       />
       <TextField
+        autoComplete="false"
+        error={descError}
+        helperText={descErrMsg}
         required
         id="team-description-input"
         label="Description"
@@ -31,7 +66,11 @@ const TeamDetailsForm = ({
         fullWidth
         multiline
         rows={4}
-        onChange={handleDescriptionChange}
+        onChange={(e) => {
+          handleDescValidation()
+          handleDescriptionChange(e)
+        }}
+        onBlur={handleDescValidation}
       />
     </React.Fragment>
   )
