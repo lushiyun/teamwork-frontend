@@ -14,6 +14,7 @@ const TeamsList = () => {
   const renderedTeams = () =>
     teams.map((team, index) => (
       <TeamListItem
+        key={team.id}
         team={team}
         index={index}
         selectedIndex={selectedIndex}

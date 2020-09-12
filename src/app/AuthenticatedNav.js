@@ -1,11 +1,12 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
 import SearchBar from '../utils/SearchBar'
 import LogoutButton from '../features/user/LogoutButton'
+import Logo from '../utils/Logo'
 import { drawerWidth } from './TeamsDrawer'
 
 const useStyles = makeStyles((theme) => ({
@@ -22,9 +23,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
-  },
-  logo: {
-    marginRight: theme.spacing(1),
   },
   sectionDesktop: {
     display: 'none',
@@ -51,9 +49,7 @@ const AuthenticatedNav = ({ handleDrawerToggle }) => {
           onClick={handleDrawerToggle}>
           <MenuIcon />
         </IconButton>
-        <Typography variant="h5" className={classes.logo}>
-          TeamWork.
-        </Typography>
+        <Logo />
         <SearchBar />
         <div className={classes.grow} />
         <div className={classes.sectionDesktop}>

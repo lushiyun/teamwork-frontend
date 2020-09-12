@@ -26,7 +26,13 @@ const initialState = [
 const teamsSlice = createSlice({
   name: 'teams',
   initialState,
-  reducers: {},
+  reducers: {
+    teamAdded(state, action) {
+      state.push(action.payload)
+    },
+  },
 })
+
+export const { teamAdded } = teamsSlice.actions
 
 export default teamsSlice.reducer

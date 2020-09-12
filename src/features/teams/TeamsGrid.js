@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import textTruncate from '../../utils/textTruncate'
+import AddTeamForm from './AddTeamForm'
+
 import {
   Card,
   CardActionArea,
@@ -11,12 +14,10 @@ import {
   Typography,
   Grid,
   Fab,
+  Tooltip,
 } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import { makeStyles } from '@material-ui/core/styles'
-
-import textTruncate from '../../utils/textTruncate'
-import AddTeamForm from './AddTeamForm'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
+  },
+  teamCard: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
 }))
 
@@ -42,8 +49,8 @@ const TeamsGrid = () => {
       const truncatedName = textTruncate(team.name, 18)
       const truncatedDesc = textTruncate(team.description, 60)
       return (
-        <Grid item lg={3} md={6} sm={12} xs={12}>
-          <Card key={team.id}>
+        <Grid item key={team.id} lg={3} md={6} sm={12} xs={12}>
+          <Card className={classes.teamCard}>
             <CardActionArea>
               <CardMedia
                 component="img"
@@ -76,16 +83,20 @@ const TeamsGrid = () => {
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={1}>
+      <Grid container spacing={1} alignItems="stretch">
         {renderedTeamCards()}
       </Grid>
-      <Fab
-        color="primary"
-        aria-label="add"
-        className={classes.addFab}
-        onClick={handleClickOpen}>
-        <AddIcon />
-      </Fab>
+
+      <Tooltip title="Create a team" aria-label="create">
+        <Fab
+          color="primary"
+          aria-label="add"
+          className={classes.addFab}
+          onClick={handleClickOpen}>
+          <AddIcon />
+        </Fab>
+      </Tooltip>
+
       <AddTeamForm open={open} handleClose={handleClose} />
     </div>
   )

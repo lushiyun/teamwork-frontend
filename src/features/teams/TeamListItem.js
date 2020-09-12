@@ -6,7 +6,6 @@ const TeamListItem = (props) => {
   const { team, index, selectedIndex, handleListItemClick } = props
   return (
     <ListItem
-      key={team.id}
       button
       selected={selectedIndex === index}
       onClick={(event) => handleListItemClick(event, index)}>
@@ -16,7 +15,7 @@ const TeamListItem = (props) => {
         alt={team.name}
         style={{ marginRight: '1rem' }}
       />
-      <ListItemText primary={team.name} noWrap />
+      <ListItemText primary={team.name} />
       <MoreHorizIcon />
     </ListItem>
   )
