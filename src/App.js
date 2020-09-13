@@ -10,7 +10,6 @@ import TeamsDrawer from './app/TeamsDrawer'
 import LandingPage from './app/LandingPage'
 import LoadingBackdrop from './app/LoadingBackdrop'
 import TeamsGrid from './features/teams/TeamsGrid'
-import AddTeamForm from './features/teams/AddTeamForm'
 import AuthenticatedRoute from './AuthenticatedRoute'
 
 const useStyles = makeStyles((theme) => ({
@@ -23,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 const App = (props) => {
   const classes = useStyles()
+  const { isLoading, isAuthenticated } = useAuth0()
   const { window } = props
   const [open, setOpen] = useState(false)
 
@@ -31,19 +31,40 @@ const App = (props) => {
 
   const handleDrawerToggle = () => setOpen(!open)
 
+  if (isLoading) {
+    return <LoadingBackdrop />
+  }
+
   return (
-    <div style={{ display: 'flex' }}>
-      <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
-      <TeamsDrawer
-        handleDrawerToggle={handleDrawerToggle}
-        container={container}
-        open={open}
-      />
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <TeamsGrid />
-      </main>
-    </div>
+    <React.Fragment>
+      {isAuthenticated && (
+        <div style={{ display: 'flex' }}>
+          <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
+          <TeamsDrawer
+            handleDrawerToggle={handleDrawerToggle}
+            container={container}
+            open={open}
+          />
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            <Switch>
+              <AuthenticatedRoute
+                exact
+                path="/dashboard"
+                component={TeamsGrid}
+              />
+            </Switch>
+          </main>
+        </div>
+      )}
+
+      {!isAuthenticated && (
+        <div style={{ height: '100vh' }}>
+          <Nav />
+          <Route exact path="/" component={LandingPage} />
+        </div>
+      )}
+    </React.Fragment>
   )
 }
 

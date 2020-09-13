@@ -9,6 +9,10 @@ import App from './App'
 import store from './app/store'
 import theme from './theme'
 
+import { fetchUsers } from './features/users/usersSlice'
+
+store.dispatch(fetchUsers())
+
 ReactDOM.render(
   <Router>
     <Provider store={store}>

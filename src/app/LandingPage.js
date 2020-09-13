@@ -6,14 +6,20 @@ import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 
 import introPhoto from './Work-together.png'
-import SignupButton from '../features/user/SignupButton'
+import SignupButton from '../features/users/SignupButton'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh',
   },
+  title: {
+    fontFamily: 'Display Fair, serif',
+    fontWeight: 700,
+  },
   introTitle: {
     marginBottom: theme.spacing(5),
+    fontFamily: 'Display Fair, serif',
+    fontWeight: 700,
   },
   buttonContainer: {},
   introBackground: {
@@ -21,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
       'linear-gradient(125deg, rgba(76,181,245,1) 0%, rgba(179,193,0,1) 100%)',
   },
   introPhoto: {
-    width: '50%',
+    width: '48%',
     height: 'auto',
     position: 'absolute',
     top: '28vh',
@@ -39,7 +45,7 @@ const LandingPage = () => {
     <Grid container component="main" className={classes.root} spacing={0}>
       <Grid container item xs={12} sm={6} direction="column" justify="center">
         <Box maxWidth="450px" alignSelf="center">
-          <Typography variant="h2">Team Work</Typography>
+          <Typography variant="h2" className={classes.title}>Team Work</Typography>
           <Typography variant="h4" className={classes.introTitle}>
             Makes the Dream Work
           </Typography>

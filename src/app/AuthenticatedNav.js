@@ -5,7 +5,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
 import SearchBar from '../utils/SearchBar'
-import LogoutButton from '../features/user/LogoutButton'
+import LogoutButton from '../features/users/LogoutButton'
 import Logo from '../utils/Logo'
 import { drawerWidth } from './TeamsDrawer'
 

@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useAuth0 } from '@auth0/auth0-react'
 
 import textTruncate from '../../utils/textTruncate'
 import AddTeamForm from './AddTeamForm'
+import { selectAllUsers, currentUserAdded, addNewUser } from '../users/usersSlice'
 
 import {
   Card,
@@ -43,6 +46,29 @@ const TeamsGrid = () => {
 
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  const { user } = useAuth0()
+  const users = useSelector(selectAllUsers)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const { email, name, picture } = user
+    let existingUser = users.find((u) => u.email === email)
+    const addCurrentUser = async () => {
+      const resultAction = await dispatch(
+        addNewUser({ email, name, picture_url: picture })
+      )
+      unwrapResult(resultAction)
+    }
+
+    if (!existingUser) {
+      existingUser = addCurrentUser()
+    }
+
+    dispatch(currentUserAdded({ id: existingUser.id }))
+
+    console.log(existingUser)
+  }, [])
 
   const renderedTeamCards = () =>
     teams.map((team) => {
