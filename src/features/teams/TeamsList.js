@@ -1,26 +1,56 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  List,
+  ListSubheader,
+  ListItem,
+  Avatar,
+  ListItemText,
+} from '@material-ui/core'
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 
-import { List, ListSubheader } from '@material-ui/core'
-
-import TeamListItem from './TeamListItem'
+import { selectAllTeams, fetchTeams } from './teamsSlice'
+import LoadingBackdrop from '../../app/LoadingBackdrop'
 
 const TeamsList = () => {
-  const teams = useSelector((state) => state.teams)
   const [selectedIndex, setSelectedIndex] = useState(1)
-
   const handleListItemClick = (e, index) => setSelectedIndex(index)
 
-  const renderedTeams = () =>
-    teams.map((team, index) => (
-      <TeamListItem
+  const dispatch = useDispatch()
+  const teams = useSelector(selectAllTeams)
+  const teamsStatus = useSelector((state) => state.teams.status)
+  const error = useSelector((state) => state.teams.error)
+
+  useEffect(() => {
+    if (teamsStatus === 'idle') {
+      dispatch(fetchTeams())
+    }
+  }, [teamsStatus, dispatch])
+
+  let content
+
+  if (teamsStatus === 'loading') {
+    content = <LoadingBackdrop />
+  } else if (teamsStatus === 'succeeded') {
+    content = teams.map((team, index) => (
+      <ListItem
         key={team.id}
-        team={team}
-        index={index}
-        selectedIndex={selectedIndex}
-        handleListItemClick={handleListItemClick}
-      />
+        button
+        selected={selectedIndex === index}
+        onClick={(event) => handleListItemClick(event, index)}>
+        <Avatar
+          variant="rounded"
+          src={team.cover_url}
+          alt={team.name}
+          style={{ marginRight: '1rem' }}
+        />
+        <ListItemText primary={team.name} />
+        <MoreHorizIcon />
+      </ListItem>
     ))
+  } else if (teamsStatus === 'error') {
+    content = <div>{error}</div>
+  }
 
   return (
     <List
@@ -31,7 +61,7 @@ const TeamsList = () => {
           Teams
         </ListSubheader>
       }>
-      {renderedTeams()}
+      {content}
     </List>
   )
 }

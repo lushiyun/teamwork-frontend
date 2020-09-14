@@ -4,35 +4,54 @@ import {
   createSelector,
   createEntityAdapter,
 } from '@reduxjs/toolkit'
+import teamwork from '../../api/teamwork'
 
-const initialState = [
-  {
-    id: 1,
-    name: 'Fitness Group',
-    description:
-      'A fitness team to hold each other accountable on our fitness journey',
-    cover:
-      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80',
-  },
-  {
-    id: 2,
-    name: 'Japan Travel Plan Team',
-    description: 'A team of friends planning our trip to Japan together',
-    cover:
-      'https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2138&q=80',
-  },
-]
+const teamsAdapter = createEntityAdapter()
+
+const initialState = teamsAdapter.getInitialState({
+  status: 'idle',
+  error: null,
+})
+
+export const fetchTeams = createAsyncThunk('teams/fetchTeams', async () => {
+  const response = await teamwork.get('/teams')
+  return response.data.data.map((team) => {
+    const userIds = team.relationships.users.data.map((user) => user.id)
+    return { id: team.id, ...team.attributes, userIds: userIds }
+  })
+})
+
+export const addNewTeam = createAsyncThunk('teams/addNewTeam', async (data) => {
+  const response = await teamwork.post('/teams', data)
+  const teamData = response.data.data
+  const userIds = teamData.relationships.users.data.map((user) => user.id)
+  return { id: teamData.id, ...teamData.attributes, userIds: userIds }
+})
 
 const teamsSlice = createSlice({
   name: 'teams',
   initialState,
-  reducers: {
-    teamAdded(state, action) {
-      state.push(action.payload)
+  reducers: {},
+  extraReducers: {
+    [fetchTeams.pending]: (state, action) => {
+      state.status = 'loading'
     },
+    [fetchTeams.fulfilled]: (state, action) => {
+      state.status = 'succeeded'
+      teamsAdapter.upsertMany(state, action.payload)
+    },
+    [fetchTeams.rejected]: (state, action) => {
+      state.status = 'failed'
+      state.error = action.payload
+    },
+    [addNewTeam.fulfilled]: teamsAdapter.addOne,
   },
 })
 
-export const { teamAdded } = teamsSlice.actions
-
 export default teamsSlice.reducer
+
+export const {
+  selectAll: selectAllTeams,
+  selectById: selectTeamById,
+  selectIds: selectTeamIds,
+} = teamsAdapter.getSelectors((state) => state.teams)

@@ -2,6 +2,7 @@ import {
   createSlice,
   createAsyncThunk,
   createEntityAdapter,
+  createSelector,
 } from '@reduxjs/toolkit'
 import teamwork from '../../api/teamwork'
 
@@ -13,7 +14,7 @@ const initialState = usersAdapter.getInitialState({
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   const response = await teamwork.get('/users')
-  return response.data.data.map(user => ({id: user.id, ...user.attributes}))
+  return response.data.data.map((user) => ({ id: user.id, ...user.attributes }))
 })
 
 export const addNewUser = createAsyncThunk('users/addNewUser', async (data) => {
@@ -26,8 +27,7 @@ const usersSlice = createSlice({
   initialState,
   reducers: {
     currentUserAdded(state, action) {
-      const { id } = action.payload
-      state.currentUser = id
+      state.currentUser = action.payload
     },
   },
   extraReducers: {

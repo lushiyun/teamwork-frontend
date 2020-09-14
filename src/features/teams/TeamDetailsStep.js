@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 
-const TeamDetailsForm = ({
+const TeamDetailsStep = ({
   name,
   description,
   handleNameChange,
@@ -76,4 +76,4 @@ const TeamDetailsForm = ({
   )
 }
 
-export default TeamDetailsForm
+export default TeamDetailsStep

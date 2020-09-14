@@ -54,14 +54,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const TeamCoverForm = ({ cover, handleCoverChange }) => {
+const TeamCoverStep = ({ cover, handleCoverChange }) => {
   const classes = useStyles()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [initialImgs, setInitialImgs] = useState([])
-  const [selected, setSelected] = useState(null)
-
-  console.log(cover)
 
   useEffect(() => {
     const search = async () => {
@@ -99,14 +96,15 @@ const TeamCoverForm = ({ cover, handleCoverChange }) => {
           className={classes.image}
           focusVisibleClassName={classes.focusVisible}
           onClick={() => {
-            setSelected(img.id)
             handleCoverChange(img.urls.regular)
           }}>
           <span
             className={classes.imageSrc}
             style={{ backgroundImage: `url(${img.urls.regular})` }}
           />
-          {img.id !== selected && <span className={classes.imageBackdrop} />}
+          {cover !== img.urls.regular && (
+            <span className={classes.imageBackdrop} />
+          )}
         </ButtonBase>
       </GridListTile>
     ))
@@ -131,4 +129,4 @@ const TeamCoverForm = ({ cover, handleCoverChange }) => {
   )
 }
 
-export default TeamCoverForm
+export default TeamCoverStep

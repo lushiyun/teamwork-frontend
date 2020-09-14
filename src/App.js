@@ -31,13 +31,13 @@ const App = (props) => {
 
   const handleDrawerToggle = () => setOpen(!open)
 
-  if (isLoading) {
-    return <LoadingBackdrop />
-  }
+  // if (isLoading) {
+  //   return <LoadingBackdrop />
+  // }
 
   return (
     <React.Fragment>
-      {isAuthenticated && (
+      {!isAuthenticated && (
         <div style={{ display: 'flex' }}>
           <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
           <TeamsDrawer
@@ -48,7 +48,7 @@ const App = (props) => {
           <main className={classes.content}>
             <div className={classes.toolbar} />
             <Switch>
-              <AuthenticatedRoute
+              <Route
                 exact
                 path="/dashboard"
                 component={TeamsGrid}
@@ -58,12 +58,12 @@ const App = (props) => {
         </div>
       )}
 
-      {!isAuthenticated && (
+      {/* {!isAuthenticated && (
         <div style={{ height: '100vh' }}>
           <Nav />
           <Route exact path="/" component={LandingPage} />
         </div>
-      )}
+      )} */}
     </React.Fragment>
   )
 }
