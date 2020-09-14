@@ -28,7 +28,7 @@ const TeamsGrid = () => {
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
-  const renderedTeamCards = () => teams.map((team) => <TeamCard team={team} />)
+  const renderedTeamCards = () => teams.map((team) => <TeamCard team={team} key={team.id} />)
 
   return (
     <div className={classes.root}>

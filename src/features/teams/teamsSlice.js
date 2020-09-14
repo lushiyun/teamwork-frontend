@@ -22,7 +22,7 @@ export const fetchTeams = createAsyncThunk('teams/fetchTeams', async () => {
 })
 
 export const addNewTeam = createAsyncThunk('teams/addNewTeam', async (data) => {
-  const response = await teamwork.post('/teams', data)
+  const response = await teamwork.post('/teams', { team: data })
   const teamData = response.data.data
   const userIds = teamData.relationships.users.data.map((user) => user.id)
   return { id: teamData.id, ...teamData.attributes, userIds: userIds }

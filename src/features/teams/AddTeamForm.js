@@ -26,7 +26,7 @@ const AddTeamForm = ({ open, handleClose }) => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [cover, setCover] = useState('')
-  const [members, setMembers] = useState([currentUser])
+  const [members, setMembers] = useState([])
   const isLastStep = activeStep === stepTitles.length - 1
 
   const handleNext = () => setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -63,12 +63,12 @@ const AddTeamForm = ({ open, handleClose }) => {
   const handleFormSubmit = async () => {
     if (canAdd) {
       try {
-        setAddRequestStatus('pending')
         const resultAction = await dispatch(
           addNewTeam({ name, description, cover_url: cover, user_ids: members })
         )
         unwrapResult(resultAction)
         resetForm()
+        handleClose()
       } catch (err) {
         console.error('Failed to save the team: ', err)
       } finally {
