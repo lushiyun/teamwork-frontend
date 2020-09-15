@@ -21,12 +21,15 @@ import {
 import LoadingBackdrop from '../../app/LoadingBackdrop'
 import { setSnackbar } from '../../ui/snackbarSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
+import TeamShowPage from './TeamShowPage'
 
 const TeamsList = () => {
   const [selectedId, setSelectedId] = useState(null)
   const handleListItemClick = (e, id) => setSelectedId(id)
   const [anchorEl, setAnchorEl] = useState(null)
   const handleMoreIconClick = (e) => setAnchorEl(e.currentTarget)
+  const [open, setOpen] = useState(false)
+  const handleClose = () => setOpen(false)
 
   const dispatch = useDispatch()
   const teams = useSelector(selectAllTeams)
@@ -41,10 +44,6 @@ const TeamsList = () => {
   }, [teamsStatus, dispatch])
 
   let content
-
-  const handleDetailsClick = () => {
-    return <div></div>
-  }
 
   const serverError = {
     open: true,
@@ -119,9 +118,16 @@ const TeamsList = () => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}>
-        <MenuItem onClick={handleDetailsClick}>Details</MenuItem>
+        <MenuItem onClick={() => setOpen(true)}>Details</MenuItem>
         <MenuItem onClick={handleLeaveClick}>Leave</MenuItem>
       </Menu>
+      {selectedTeam && (
+        <TeamShowPage
+          open={open}
+          handleClose={handleClose}
+          team={selectedTeam}
+        />
+      )}
     </List>
   )
 }

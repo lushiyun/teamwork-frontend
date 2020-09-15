@@ -66,9 +66,11 @@ const TeamShowPage = ({ open, handleClose, team, handleJoin }) => {
       <DialogActions
         style={{ paddingRight: '1.5rem', paddingBottom: '1.5rem' }}>
         <Button onClick={handleClose}>close</Button>
-        <Button variant="contained" color="primary" onClick={handleJoin}>
-          Join
-        </Button>
+        {!team.userIds.includes('45') && (
+          <Button variant="contained" color="primary" onClick={handleJoin}>
+            Join
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   )
