@@ -39,13 +39,13 @@ const TeamCard = ({ team }) => {
     type: 'error',
     message: 'You are already in this team',
   }
-
+  
   const serverError = {
     open: true,
     type: 'error',
     message: 'Server busy, try again later',
   }
-
+  
   const successMessage = {
     open: true,
     type: 'success',
@@ -72,7 +72,7 @@ const TeamCard = ({ team }) => {
         unwrapResult(resultAction)
         dispatch(setSnackbar(successMessage))
       } catch (err) {
-        dispatch(setSnackbar(true, 'error', `${err}`))
+        console.error('Failed to save the team: ', err)
       } finally {
         setJoinRequestStatus('idle')
       }
