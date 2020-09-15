@@ -11,6 +11,7 @@ import LandingPage from './app/LandingPage'
 import LoadingBackdrop from './app/LoadingBackdrop'
 import TeamsGrid from './features/teams/TeamsGrid'
 import AuthenticatedRoute from './AuthenticatedRoute'
+import GlobalSnackbar from './ui/GlobalSnackbar'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -37,6 +38,7 @@ const App = (props) => {
 
   return (
     <React.Fragment>
+      <GlobalSnackbar />
       {!isAuthenticated && (
         <div style={{ display: 'flex' }}>
           <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
@@ -48,11 +50,7 @@ const App = (props) => {
           <main className={classes.content}>
             <div className={classes.toolbar} />
             <Switch>
-              <Route
-                exact
-                path="/dashboard"
-                component={TeamsGrid}
-              />
+              <Route exact path="/dashboard" component={TeamsGrid} />
             </Switch>
           </main>
         </div>

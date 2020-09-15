@@ -7,9 +7,9 @@ import { AppBar, Toolbar, IconButton } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 
-import SearchBar from '../utils/SearchBar'
+import SearchBar from '../ui/SearchBar'
 import LogoutButton from '../features/users/LogoutButton'
-import Logo from '../utils/Logo'
+import Logo from '../ui/Logo'
 import { drawerWidth } from './TeamsDrawer'
 import {
   selectAllUsers,

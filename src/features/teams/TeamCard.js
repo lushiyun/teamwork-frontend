@@ -1,6 +1,3 @@
-import React, { useState } from 'react'
-import textTruncate from '../../utils/textTruncate'
-
 import {
   Grid,
   Card,
@@ -12,7 +9,15 @@ import {
   Button,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core'
+
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { unwrapResult } from '@reduxjs/toolkit'
+
+import { updateTeamMember } from './teamsSlice'
+import { setSnackbar } from '../../ui/snackbarSlice'
 import TeamShowPage from './TeamShowPage'
+import textTruncate from '../../ui/textTruncate'
 
 const useStyles = makeStyles((theme) => ({
   teamCard: {
@@ -25,11 +30,57 @@ const useStyles = makeStyles((theme) => ({
 
 const TeamCard = ({ team }) => {
   const classes = useStyles()
-  const truncatedName = textTruncate(team.name, 18)
-  const truncatedDesc = textTruncate(team.description, 60)
   const [open, setOpen] = useState(false)
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  const alreadyJoinedError = {
+    open: true,
+    type: 'error',
+    message: 'You are already in this team',
+  }
+
+  const serverError = {
+    open: true,
+    type: 'error',
+    message: 'Server busy, try again later',
+  }
+
+  const successMessage = {
+    open: true,
+    type: 'success',
+    message: `Joined ${team.name} successfully`,
+  }
+
+  const dispatch = useDispatch()
+  const [joinRequestStatus, setJoinRequestStatus] = useState('idle')
+
+  const handleJoin = async () => {
+    if (team.userIds.includes('25')) {
+      dispatch(setSnackbar(alreadyJoinedError))
+    } else if (joinRequestStatus !== 'idle') {
+      dispatch(setSnackbar(serverError))
+    } else {
+      try {
+        const updatedMembers = team.userIds.concat('25')
+        const resultAction = await dispatch(
+          updateTeamMember({
+            id: team.id,
+            data: { user_ids: updatedMembers },
+          })
+        )
+        unwrapResult(resultAction)
+        dispatch(setSnackbar(successMessage))
+      } catch (err) {
+        dispatch(setSnackbar(true, 'error', `${err}`))
+      } finally {
+        setJoinRequestStatus('idle')
+      }
+    }
+  }
+
+  const truncatedName = textTruncate(team.name, 18)
+  const truncatedDesc = textTruncate(team.description, 60)
 
   return (
     <React.Fragment>
@@ -53,7 +104,7 @@ const TeamCard = ({ team }) => {
             </CardContent>
           </CardActionArea>
           <CardActions>
-            <Button size="small" color="primary">
+            <Button size="small" color="primary" onClick={handleJoin}>
               Join
             </Button>
             <Button size="small" color="primary" onClick={handleClickOpen}>
@@ -62,7 +113,13 @@ const TeamCard = ({ team }) => {
           </CardActions>
         </Card>
       </Grid>
-      <TeamShowPage open={open} handleClose={handleClose} team={team} />
+      <TeamShowPage
+        key={team.id}
+        open={open}
+        team={team}
+        handleClose={handleClose}
+        handleJoin={handleJoin}
+      />
     </React.Fragment>
   )
 }

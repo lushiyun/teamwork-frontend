@@ -67,12 +67,12 @@ const AddTeamForm = ({ open, handleClose }) => {
           addNewTeam({ name, description, cover_url: cover, user_ids: members })
         )
         unwrapResult(resultAction)
-        resetForm()
-        handleClose()
       } catch (err) {
         console.error('Failed to save the team: ', err)
       } finally {
         setAddRequestStatus('idle')
+        resetForm()
+        handleClose()
       }
     }
   }

@@ -6,6 +6,8 @@ import {
 } from '@reduxjs/toolkit'
 import teamwork from '../../api/teamwork'
 
+import { selectTeamById } from '../teams/teamsSlice'
+
 const usersAdapter = createEntityAdapter()
 
 const initialState = usersAdapter.getInitialState({
@@ -18,7 +20,7 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
 })
 
 export const addNewUser = createAsyncThunk('users/addNewUser', async (data) => {
-  const response = await teamwork.post('/users', data)
+  const response = await teamwork.post('/users', { user: data })
   return { id: response.data.data.id, ...response.data.data.attributes }
 })
 
@@ -45,3 +47,8 @@ export const {
   selectById: selectUserById,
   selectIds: selectUserIds,
 } = usersAdapter.getSelectors((state) => state.users)
+
+export const selectUsersByTeam = createSelector(
+  [selectAllUsers, selectTeamById],
+  (users, team) => users.filter((user) => team.userIds.includes(user.id))
+)

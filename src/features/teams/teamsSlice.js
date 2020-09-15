@@ -28,6 +28,16 @@ export const addNewTeam = createAsyncThunk('teams/addNewTeam', async (data) => {
   return { id: teamData.id, ...teamData.attributes, userIds: userIds }
 })
 
+export const updateTeamMember = createAsyncThunk(
+  'teams/updateTeamMember',
+  async ({ id, data }) => {
+    const response = await teamwork.patch(`/teams/${id}`, { team: data })
+    const teamData = response.data.data
+    const userIds = teamData.relationships.users.data.map((user) => user.id)
+    return { id: teamData.id, ...teamData.attributes, userIds: userIds }
+  }
+)
+
 const teamsSlice = createSlice({
   name: 'teams',
   initialState,
@@ -45,6 +55,7 @@ const teamsSlice = createSlice({
       state.error = action.payload
     },
     [addNewTeam.fulfilled]: teamsAdapter.addOne,
+    [updateTeamMember.fulfilled]: teamsAdapter.upsertOne,
   },
 })
 
