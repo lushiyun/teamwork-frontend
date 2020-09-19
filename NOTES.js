@@ -173,3 +173,117 @@ export default function ButtonBases() {
     </div>
   );
 }
+
+
+// import { Paper, Box } from '@material-ui/core'
+// import { makeStyles } from '@material-ui/core/styles'
+
+// import React, { useState, useRef, useCallback } from 'react'
+// import { EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js'
+// import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'
+// import ToolBar from './ToolBar'
+
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     position: 'fixed',
+//     bottom: theme.spacing(2),
+//     width: '70%',
+//   },
+// }))
+
+// const DraftEditor = () => {
+//   const classes = useStyles()
+//   const [editorState, setEditorState] = useState(() =>
+//     EditorState.createEmpty()
+//   )
+//   const editor = useRef()
+//   const focusEditor = useCallback(() => {
+//     if (editor.current) {
+//       editor.current.focus()
+//     }
+//   }, [editor])
+
+//   const handleKeyCommand = (command, editorState) => {
+//     const nextState = RichUtils.handleKeyCommand(editorState, command)
+//     if (nextState) {
+//       setEditorState(nextState)
+//       return true
+//     }
+//     return false
+//   }
+
+//   const mapKeyToEditorCommand = (e) => {
+//     if (e.keyCode === 9) {
+//       const nextState = RichUtils.onTab(e, editorState, 4)
+//       if (nextState !== editorState) {
+//         setEditorState(nextState)
+//       }
+//       return
+//     }
+//     return getDefaultKeyBinding(e)
+//   }
+
+//   const toggleBlockType = (blockType) => {
+//     const nextState = RichUtils.toggleBlockType(editorState, blockType)
+//     setEditorState(nextState)
+//   }
+
+//   const toggleInlineStyle = (inlineStyle) => {
+//     const nextState = RichUtils.toggleInlineStyle(editorState, inlineStyle)
+//     setEditorState(nextState)
+//   }
+
+//   const toggleCode = () => {
+//     const nextState = RichUtils.toggleCode(editorState)
+//     setEditorState(nextState)
+//   }
+
+//   return (
+//     <div className={classes.root}>
+//       <Paper variant="outlined">
+//         <Box onClick={focusEditor} p={1.5}>
+//           <Editor
+//             blockStyleFn={getBlockStyle}
+//             customStyleMap={styleMap}
+//             editorState={editorState}
+//             handleKeyCommand={handleKeyCommand}
+//             keyBindingFn={mapKeyToEditorCommand}
+//             onChange={setEditorState}
+//             placeholder="Message..."
+//             ref={editor}
+//             spellCheck={true}
+//           />
+//         </Box>
+//         <Box p={1}>
+//           <ToolBar
+//             toggleBlockType={toggleBlockType}
+//             toggleInlineStyle={toggleInlineStyle}
+//             toggleCode={toggleCode}
+//           />
+//         </Box>
+//       </Paper>
+//     </div>
+//   )
+// }
+
+// const styleMap = {
+//   CODE: {
+//     border: '1px solid gray',
+//     borderRadius: '4px',
+//     backgroundColor: '#E0E0E0',
+//     fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+//     fontSize: 16,
+//     padding: 2,
+//   },
+// }
+
+// function getBlockStyle(block) {
+//   switch (block.getType()) {
+//     case 'blockquote':
+//       return 'RichEditor-blockquote'
+//     default:
+//       return null
+//   }
+// }
+
+// export default DraftEditor

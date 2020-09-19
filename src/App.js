@@ -10,9 +10,9 @@ import TeamsDrawer from './app/TeamsDrawer'
 import LandingPage from './app/LandingPage'
 import LoadingBackdrop from './app/LoadingBackdrop'
 import TeamsGrid from './features/teams/TeamsGrid'
-import MessageInput from './features/messages/MessageInput'
 import AuthenticatedRoute from './AuthenticatedRoute'
 import GlobalSnackbar from './ui/GlobalSnackbar'
+import TeamChat from './features/teams/TeamChat'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -52,7 +52,7 @@ const App = (props) => {
             <div className={classes.toolbar} />
             <Switch>
               <Route exact path="/teams" component={TeamsGrid} />
-              <Route exact path="/dashboard" component={MessageInput} />
+              <Route path="/teams/:teamId" children={<TeamChat />} /> 
             </Switch>
           </main>
         </div>

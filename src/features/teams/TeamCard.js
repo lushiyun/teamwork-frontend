@@ -56,13 +56,13 @@ const TeamCard = ({ team }) => {
   const [joinRequestStatus, setJoinRequestStatus] = useState('idle')
 
   const handleJoin = async () => {
-    if (team.userIds.includes('25')) {
+    if (team.userIds.includes('45')) {
       dispatch(setSnackbar(alreadyJoinedError))
     } else if (joinRequestStatus !== 'idle') {
       dispatch(setSnackbar(serverError))
     } else {
       try {
-        const updatedMembers = team.userIds.concat('25')
+        const updatedMembers = team.userIds.concat('45')
         const resultAction = await dispatch(
           updateTeamMember({
             id: team.id,

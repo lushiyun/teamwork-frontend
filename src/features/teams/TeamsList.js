@@ -11,6 +11,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import {
   selectAllTeams,
@@ -22,10 +23,10 @@ import LoadingBackdrop from '../../app/LoadingBackdrop'
 import { setSnackbar } from '../../ui/snackbarSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
 import TeamShowPage from './TeamShowPage'
+import { fetchNewMessages } from '../messages/messagesSlice'
 
 const TeamsList = () => {
   const [selectedId, setSelectedId] = useState(null)
-  const handleListItemClick = (e, id) => setSelectedId(id)
   const [anchorEl, setAnchorEl] = useState(null)
   const handleMoreIconClick = (e) => setAnchorEl(e.currentTarget)
   const [open, setOpen] = useState(false)
@@ -44,6 +45,36 @@ const TeamsList = () => {
   }, [teamsStatus, dispatch])
 
   let content
+
+  const handleListItemClick = (e, id) => {
+    setSelectedId(id)
+    dispatch(fetchNewMessages(id))
+  }
+
+  if (teamsStatus === 'loading') {
+    content = <LoadingBackdrop />
+  } else if (teamsStatus === 'succeeded') {
+    content = teams.map((team) => (
+      <ListItem
+        component={Link}
+        to={`/teams/${team.id}`}
+        key={team.id}
+        button
+        selected={selectedId === team.id}
+        onClick={(e) => handleListItemClick(e, team.id)}>
+        <Avatar
+          variant="rounded"
+          src={team.cover_url}
+          alt={team.name}
+          style={{ marginRight: '1rem' }}
+        />
+        <ListItemText primary={team.name} />
+        <MoreHorizIcon onClick={handleMoreIconClick} />
+      </ListItem>
+    ))
+  } else if (teamsStatus === 'error') {
+    content = <div>{error}</div>
+  }
 
   const serverError = {
     open: true,
@@ -80,28 +111,28 @@ const TeamsList = () => {
     }
   }
 
-  if (teamsStatus === 'loading') {
-    content = <LoadingBackdrop />
-  } else if (teamsStatus === 'succeeded') {
-    content = teams.map((team) => (
-      <ListItem
-        key={team.id}
-        button
-        selected={selectedId === team.id}
-        onClick={(event) => handleListItemClick(event, team.id)}>
-        <Avatar
-          variant="rounded"
-          src={team.cover_url}
-          alt={team.name}
-          style={{ marginRight: '1rem' }}
-        />
-        <ListItemText primary={team.name} />
-        <MoreHorizIcon onClick={handleMoreIconClick} />
-      </ListItem>
-    ))
-  } else if (teamsStatus === 'error') {
-    content = <div>{error}</div>
-  }
+  const menu = (
+    <Menu
+      anchorEl={anchorEl}
+      keepMounted
+      open={Boolean(anchorEl)}
+      onClose={() => setAnchorEl(null)}>
+      <MenuItem
+        onClick={() => {
+          setAnchorEl(null)
+          setOpen(true)
+        }}>
+        Details
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          setAnchorEl(null)
+          handleLeaveClick()
+        }}>
+        Leave
+      </MenuItem>
+    </Menu>
+  )
 
   return (
     <List
@@ -113,14 +144,7 @@ const TeamsList = () => {
         </ListSubheader>
       }>
       {content}
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={() => setAnchorEl(null)}>
-        <MenuItem onClick={() => setOpen(true)}>Details</MenuItem>
-        <MenuItem onClick={handleLeaveClick}>Leave</MenuItem>
-      </Menu>
+      {menu}
       {selectedTeam && (
         <TeamShowPage
           open={open}

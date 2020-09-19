@@ -32,7 +32,7 @@ const TeamsGrid = () => {
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={1} alignItems="stretch">
+      <Grid container spacing={2} alignItems="stretch">
         {renderedTeamCards()}
       </Grid>
       <div className={classes.addFab}>

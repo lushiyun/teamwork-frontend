@@ -45,7 +45,6 @@ export default usersSlice.reducer
 export const {
   selectAll: selectAllUsers,
   selectById: selectUserById,
-  selectIds: selectUserIds,
 } = usersAdapter.getSelectors((state) => state.users)
 
 export const selectUsersByTeam = createSelector(

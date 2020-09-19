@@ -64,5 +64,4 @@ export default teamsSlice.reducer
 export const {
   selectAll: selectAllTeams,
   selectById: selectTeamById,
-  selectIds: selectTeamIds,
 } = teamsAdapter.getSelectors((state) => state.teams)
