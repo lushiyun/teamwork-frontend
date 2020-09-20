@@ -9,13 +9,7 @@ import Auth0ProviderWithHistory from './Auth0ProviderWithHistory'
 import App from './App'
 import store from './app/store'
 import theme from './theme'
-import { fetchUsers } from './features/users/usersSlice'
-import {fetchTeams} from './features/teams/teamsSlice'
 import { WS_ROOT } from './api/teamwork'
-// import ActionCableContext from './app/ActionCableContext'
-
-store.dispatch(fetchUsers())
-// store.dispatch(fetchTeams())
 
 const CableApp = {}
 CableApp.cable = actionCable.createConsumer(WS_ROOT)

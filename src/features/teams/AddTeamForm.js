@@ -85,12 +85,14 @@ const AddTeamForm = ({ open, handleClose }) => {
       dispatch(setSnackbar(serverError))
     } else {
       try {
+        setAddRequestStatus('pending')
         const resultAction = await dispatch(
           addNewTeam({ name, description, cover_url: cover, user_ids: members })
         )
         unwrapResult(resultAction)
         dispatch(setSnackbar(successMessage))
       } catch (err) {
+        setAddRequestStatus('failed')
         console.error('Failed to save the team: ', err)
       } finally {
         setAddRequestStatus('idle')

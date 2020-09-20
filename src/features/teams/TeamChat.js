@@ -1,13 +1,18 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import QuillEditor from '../messages/QuillEditor'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchMessages, selectMessagesByTeam } from '../messages/messagesSlice'
+import {
+  fetchMessages,
+  selectMessagesByTeam,
+  sendMessage,
+} from '../messages/messagesSlice'
 import LoadingBackdrop from '../../app/LoadingBackdrop'
 import MessageItem from '../messages/MessageItem'
 import { List, Container } from '@material-ui/core'
 import { ActionCableContext } from '../../index'
 import { makeStyles } from '@material-ui/core/styles'
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +28,34 @@ const useStyles = makeStyles((theme) => ({
 const TeamChat = () => {
   const classes = useStyles()
   const { teamId } = useParams()
+  const [channel, setChannel] = useState(null)
+
+  const cable = useContext(ActionCableContext)
+  useEffect(() => {
+    const channel = cable.subscriptions.create(
+      {
+        channel: 'MessagesChannel',
+        id: teamId,
+      },
+      {
+        received: (data) => {
+          console.log(data)
+        },
+        connected: () => {
+          console.log('connected')
+        },
+      }
+    )
+    setChannel(channel)
+    return () => {
+      channel.unsubscribe()
+    }
+  }, [teamId])
+
+  const sendMessage = (content) => {
+    const data = { teamId, userId: '45', content }
+    channel.send(data)
+  }
 
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
 
@@ -31,47 +64,6 @@ const TeamChat = () => {
     messages.map((message) => (
       <MessageItem key={message.id} message={message} />
     ))
-
-  const cable = useContext(ActionCableContext)
-  const teamChannel = cable.subscriptions.create(
-    {
-      channel: 'TeamsChannel',
-      id: teamId,
-    },
-    {
-      received: (data) => {
-        console.log('data')
-      },
-      connected: () => {
-        console.log('connected')
-      },
-    }
-  )
-
-  // useEffect(() => {
-  //   teamChannel = cable.subscriptions.create(
-  //     {
-  //       channel: 'TeamsChannel',
-  //       id: teamId,
-  //     },
-  //     {
-  //       received: (data) => {
-  //         console.log('data')
-  //       },
-  //       send: (data) => {
-  //         console.log(data)
-  //       },
-  //     }
-  //   )
-  //   // return () => {
-  //   //   teamChannel.unsubscribe()
-  //   // }
-  // }, [teamId])
-  // console.log(teamChannel)
-
-  const sendMessage = (data) => {
-    teamChannel.send({ team_id: teamId, content: data })
-  }
 
   return (
     <Container maxWidth="md" className={classes.root}>
