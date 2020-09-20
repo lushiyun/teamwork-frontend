@@ -13,58 +13,50 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import AddIcon from '@material-ui/icons/Add'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import {
-  fetchTeams,
   updateTeamMember,
   selectTeamById,
   selectTeamsByUser,
 } from './teamsSlice'
-import LoadingBackdrop from '../../app/LoadingBackdrop'
+
 import { setSnackbar } from '../../ui/snackbarSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
 import TeamShowPage from './TeamShowPage'
-import { fetchNewMessages } from '../messages/messagesSlice'
 
 const TeamsList = () => {
+  // Material UI styling helpers
   const [selectedId, setSelectedId] = useState(null)
-  const selectedTeam = useSelector((state) => selectTeamById(state, selectedId))
+  const handleListItemClick = (e, id) => setSelectedId(id)
 
   const [anchorEl, setAnchorEl] = useState(null)
   const handleMoreIconClick = (e) => setAnchorEl(e.currentTarget)
+
   const [open, setOpen] = useState(false)
   const handleClose = () => setOpen(false)
+  // Material UI styling helpers
 
-  const dispatch = useDispatch()
   const teams = useSelector((state) => selectTeamsByUser(state, '45'))
+  const selectedTeam = useSelector((state) => selectTeamById(state, selectedId))
 
-  let content
-
-  const handleListItemClick = (e, id) => {
-    setSelectedId(id)
-    dispatch(fetchNewMessages(id))
-  }
-
-  content = teams.map((team) => (
+  const renderedTeamListItems = teams.map((team) => (
     <ListItem
       component={Link}
       to={`/teams/${team.id}`}
       key={team.id}
       button
-      selected={selectedId === team.id}>
+      selected={selectedId === team.id}
+      onClick={(e) => handleListItemClick(e, team.id)}>
       <Avatar
         variant="rounded"
         src={team.cover_url}
         alt={team.name}
         style={{ marginRight: '1rem' }}
       />
-      <ListItemText
-        primary={team.name}
-        onClick={(e) => handleListItemClick(e, team.id)}
-      />
+      <ListItemText primary={team.name} />
       <ListItemSecondaryAction>
         <IconButton onClick={handleMoreIconClick} edge="end">
           <MoreHorizIcon />
@@ -73,19 +65,10 @@ const TeamsList = () => {
     </ListItem>
   ))
 
-  const serverError = {
-    open: true,
-    type: 'error',
-    message: 'Server busy, try again later',
-  }
-
-  const successMessage = (name) => ({
-    open: true,
-    type: 'success',
-    message: `Left ${name} successfully`,
-  })
-
+  // Leave team function from menu
+  const dispatch = useDispatch()
   const [leaveRequestStatus, setLeaveRequestStatus] = useState('idle')
+
   const handleLeaveClick = async () => {
     if (leaveRequestStatus !== 'idle') {
       dispatch(setSnackbar(serverError))
@@ -134,7 +117,6 @@ const TeamsList = () => {
   return (
     <List
       component="nav"
-      aria-label="teams list"
       subheader={
         <ListSubheader component="div" id="list-subheader">
           Teams
@@ -144,11 +126,11 @@ const TeamsList = () => {
         component={Link}
         to={'/teams'}
         color="primary"
-        style={{ marginLeft: '20px' }}
+        style={{ marginLeft: '2rem' }}
         startIcon={<AddIcon />}>
         Join or create a team
       </Button>
-      {content}
+      {renderedTeamListItems}
       {menu}
       {selectedTeam && (
         <TeamShowPage
@@ -160,5 +142,18 @@ const TeamsList = () => {
     </List>
   )
 }
+
+// Snackbar helpers
+const serverError = {
+  open: true,
+  type: 'error',
+  message: 'Server busy, try again later',
+}
+
+const successMessage = (name) => ({
+  open: true,
+  type: 'success',
+  message: `Left ${name} successfully`,
+})
 
 export default TeamsList

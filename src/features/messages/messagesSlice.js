@@ -41,8 +41,7 @@ const messagesSlice = createSlice({
         teamId: data.relationships.team.data.id,
         userId: data.relationships.user.data.id,
       }
-      console.log(message)
-      messagesAdapter.addOne(message)
+      messagesAdapter.addOne(state, message)
     },
   },
   extraReducers: {

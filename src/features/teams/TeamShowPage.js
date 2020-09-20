@@ -31,6 +31,7 @@ const TeamShowPage = ({ open, handleClose, team, handleJoin }) => {
   const members = useSelector((state) => selectUsersByTeam(state, team.id))
 
   const renderedMembers = () =>
+    members &&
     members.map((member) => (
       <GridListTile key={member.id}>
         <img src={member.picture_url} alt={member.name} />

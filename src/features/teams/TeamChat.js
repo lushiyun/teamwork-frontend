@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import QuillEditor from '../messages/QuillEditor'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  fetchMessages,
+  fetchNewMessages,
   selectMessagesByTeam,
   messageReceived,
 } from '../messages/messagesSlice'
@@ -29,6 +29,12 @@ const TeamChat = () => {
   const classes = useStyles()
   const { teamId } = useParams()
   const [channel, setChannel] = useState(null)
+  const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchNewMessages(teamId))
+  }, [teamId, dispatch])
 
   const cable = useContext(ActionCableContext)
   useEffect(() => {
@@ -54,15 +60,11 @@ const TeamChat = () => {
     channel.send(data)
   }
 
-  const dispatch = useDispatch()
   const receiveMessage = (data) => {
-    console.log(data)
     dispatch(messageReceived(JSON.parse(data)))
   }
 
-  const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
-
-  const renderedMessages =
+  const renderedMessages = () =>
     messages &&
     messages.map((message) => (
       <MessageItem key={message.id} message={message} />
@@ -70,7 +72,7 @@ const TeamChat = () => {
 
   return (
     <Container maxWidth="md" className={classes.root}>
-      <List className={classes.msgList}>{renderedMessages}</List>
+      <List className={classes.msgList}>{renderedMessages()}</List>
       <QuillEditor sendMessage={sendMessage} />
     </Container>
   )

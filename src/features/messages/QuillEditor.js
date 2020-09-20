@@ -64,18 +64,8 @@ const QuillEditor = ({ sendMessage }) => {
 
   const handleClick = () => {
     const editor = quillRef.current.getEditor()
-    sendMessage({content: JSON.stringify(editor.getContents())})
+    sendMessage(JSON.stringify(editor.getContents()))
   }
-
-  // const dispatch = useDispatch()
-  // const [sendMessageStatus, setSendMessageStatus] = useState('idle')
-  // const sendMessage = () => {
-  //   if (sendMessageStatus === 'idle' && !!value) {
-  //     const editor = quillRef.current.getEditor()
-  //     const content = JSON.stringify(editor.getContents())
-  //     dispatch(sendMessage({ content, teamId, userId: '45' }))
-  //   }
-  // }
 
   return (
     <Paper variant="outlined" className={classes.root}>
