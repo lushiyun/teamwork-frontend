@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   fetchMessages,
   selectMessagesByTeam,
-  sendMessage,
+  messageReceived,
 } from '../messages/messagesSlice'
 import LoadingBackdrop from '../../app/LoadingBackdrop'
 import MessageItem from '../messages/MessageItem'
@@ -39,10 +39,7 @@ const TeamChat = () => {
       },
       {
         received: (data) => {
-          console.log(data)
-        },
-        connected: () => {
-          console.log('connected')
+          receiveMessage(data)
         },
       }
     )
@@ -55,6 +52,12 @@ const TeamChat = () => {
   const sendMessage = (content) => {
     const data = { teamId, userId: '45', content }
     channel.send(data)
+  }
+
+  const dispatch = useDispatch()
+  const receiveMessage = (data) => {
+    console.log(data)
+    dispatch(messageReceived(JSON.parse(data)))
   }
 
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))

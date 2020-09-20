@@ -29,29 +29,30 @@ export const fetchNewMessages = createAsyncThunk(
   }
 )
 
-export const sendMessage = createAsyncThunk(
-  'messages/sendMessage',
-  async (data) => {
-    const { teamId, userId, content } = data
-    await teamwork.post('/messages', {
-      team_id: teamId,
-      user_id: userId,
-      content,
-    })
-  }
-)
-
 const messagesSlice = createSlice({
   name: 'messages',
   initialState,
-  reducers: {},
+  reducers: {
+    messageReceived(state, action) {
+      const data = action.payload.data
+      const message = {
+        id: data.id,
+        ...data.attributes,
+        teamId: data.relationships.team.data.id,
+        userId: data.relationships.user.data.id,
+      }
+      console.log(message)
+      messagesAdapter.addOne(message)
+    },
+  },
   extraReducers: {
     [fetchNewMessages.fulfilled]: (state, action) => {
       messagesAdapter.upsertMany(state, action.payload)
     },
-    [sendMessage.fulfilled]: messagesAdapter.addOne,
   },
 })
+
+export const { messageReceived } = messagesSlice.actions
 
 export default messagesSlice.reducer
 
