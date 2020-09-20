@@ -9,15 +9,23 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    width: 'inherit',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     '& > *': {
       margin: theme.spacing(1),
     },
+    '& > #emoji-palette': {
+      bottom: theme.spacing(2),
+    },
   },
 }))
+
+const style = {
+  flexGrow: 1,
+  maxWidth: 'calc(100% - 80px)',
+}
 
 Quill.register(
   {
@@ -48,7 +56,7 @@ const modules = {
   'emoji-shortname': true,
 }
 
-const QuillEditor = ({sendMessage}) => {
+const QuillEditor = ({ sendMessage }) => {
   const classes = useStyles()
   const [value, setValue] = useState('')
   const quillRef = useRef(null)
@@ -66,6 +74,7 @@ const QuillEditor = ({sendMessage}) => {
         onChange={setValue}
         modules={modules}
         ref={quillRef}
+        style={style}
       />
       <IconButton color="primary" onClick={handleSubmit}>
         <SendIcon />

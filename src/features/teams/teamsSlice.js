@@ -65,3 +65,8 @@ export const {
   selectAll: selectAllTeams,
   selectById: selectTeamById,
 } = teamsAdapter.getSelectors((state) => state.teams)
+
+export const selectTeamsByUser = createSelector(
+  [selectAllTeams, (state, userId) => userId],
+  (teams, userId) => teams.filter((team) => team.userIds.includes(userId))
+)

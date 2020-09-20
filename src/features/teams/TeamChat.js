@@ -1,22 +1,22 @@
-import { makeStyles } from '@material-ui/core/styles'
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import QuillEditor from '../messages/QuillEditor'
-import actionCable from 'actioncable'
-import { WS_ROOT } from '../../api/teamwork'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchMessages, selectMessagesByTeam } from '../messages/messagesSlice'
 import LoadingBackdrop from '../../app/LoadingBackdrop'
 import MessageItem from '../messages/MessageItem'
-import { List } from '@material-ui/core'
+import { List, Container } from '@material-ui/core'
+import { ActionCableContext } from '../../index'
+import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100%',
-    width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    height: 'calc(100% - 60px)',
+  },
+  msgList: {
+    flexGrow: 1,
   },
 }))
 
@@ -32,38 +32,52 @@ const TeamChat = () => {
       <MessageItem key={message.id} message={message} />
     ))
 
-  let cable
-  let teamChannel
+  const cable = useContext(ActionCableContext)
+  const teamChannel = cable.subscriptions.create(
+    {
+      channel: 'TeamsChannel',
+      id: teamId,
+    },
+    {
+      received: (data) => {
+        console.log('data')
+      },
+      connected: () => {
+        console.log('connected')
+      },
+    }
+  )
 
-  useEffect(() => {
-    if (!cable) {
-      cable = actionCable.createConsumer(WS_ROOT)
-      teamChannel = cable.subscriptions.create(
-        {
-          channel: 'TeamsChannel',
-          id: teamId,
-        },
-        {
-          received: (data) => {
-            console.log('data')
-          },
-        }
-      )
-    }
-    return () => {
-      teamChannel.unsubscribe()
-    }
-  }, [teamId])
+  // useEffect(() => {
+  //   teamChannel = cable.subscriptions.create(
+  //     {
+  //       channel: 'TeamsChannel',
+  //       id: teamId,
+  //     },
+  //     {
+  //       received: (data) => {
+  //         console.log('data')
+  //       },
+  //       send: (data) => {
+  //         console.log(data)
+  //       },
+  //     }
+  //   )
+  //   // return () => {
+  //   //   teamChannel.unsubscribe()
+  //   // }
+  // }, [teamId])
+  // console.log(teamChannel)
 
   const sendMessage = (data) => {
-    teamChannel.send({ team_id: teamId, user_id: '45', content: data })
+    teamChannel.send({ team_id: teamId, content: data })
   }
 
   return (
-    <div className={classes.root}>
-      <List>{renderedMessages}</List>
+    <Container maxWidth="md" className={classes.root}>
+      <List className={classes.msgList}>{renderedMessages}</List>
       <QuillEditor sendMessage={sendMessage} />
-    </div>
+    </Container>
   )
 }
 

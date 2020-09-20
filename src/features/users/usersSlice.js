@@ -11,6 +11,8 @@ import { selectTeamById } from '../teams/teamsSlice'
 const usersAdapter = createEntityAdapter()
 
 const initialState = usersAdapter.getInitialState({
+  status: 'idle',
+  error: null,
   currentUser: null,
 })
 
@@ -33,7 +35,17 @@ const usersSlice = createSlice({
     },
   },
   extraReducers: {
-    [fetchUsers.fulfilled]: usersAdapter.setAll,
+    [fetchUsers.pending]: (state, action) => {
+      state.status = 'loading'
+    },
+    [fetchUsers.fulfilled]: (state, action) => {
+      state.status = 'succeeded'
+      usersAdapter.setAll(state, action.payload)
+    },
+    [fetchUsers.rejected]: (state, action) => {
+      state.status = 'failed'
+      state.error = action.payload
+    },
     [addNewUser.fulfilled]: usersAdapter.addOne,
   },
 })
