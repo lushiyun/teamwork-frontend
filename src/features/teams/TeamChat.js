@@ -7,12 +7,10 @@ import {
   selectMessagesByTeam,
   messageReceived,
 } from '../messages/messagesSlice'
-import LoadingBackdrop from '../../app/LoadingBackdrop'
 import MessageItem from '../messages/MessageItem'
 import { List, Container } from '@material-ui/core'
 import { ActionCableContext } from '../../index'
 import { makeStyles } from '@material-ui/core/styles'
-import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 
 const useStyles = makeStyles((theme) => ({
   root: {

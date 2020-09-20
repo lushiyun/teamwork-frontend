@@ -6,7 +6,6 @@ import 'quill-emoji/dist/quill-emoji.css'
 import { Paper, IconButton } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
 import { makeStyles } from '@material-ui/core/styles'
-import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +64,7 @@ const QuillEditor = ({ sendMessage }) => {
   const handleClick = () => {
     const editor = quillRef.current.getEditor()
     sendMessage(JSON.stringify(editor.getContents()))
+    setValue('')
   }
 
   return (
