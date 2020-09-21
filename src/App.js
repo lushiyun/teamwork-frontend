@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { fetchTeams } from './features/teams/teamsSlice'
 
-import Nav from './app/Nav'
+import Nav from './app/UnauthenticatedNav'
 import AuthenticatedNav from './app/AuthenticatedNav'
 import VerticleNav from './app/VerticleNav'
 import LandingPage from './app/LandingPage'

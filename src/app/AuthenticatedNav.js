@@ -1,11 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { makeStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, IconButton } from '@material-ui/core'
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Avatar,
+  Menu,
+  MenuItem,
+} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
-import AccountCircle from '@material-ui/icons/AccountCircle'
 
 import SearchBar from '../ui/SearchBar'
 import LogoutButton from '../features/users/LogoutButton'
@@ -15,7 +21,10 @@ import {
   selectAllUsers,
   currentUserAdded,
   addNewUser,
+  selectUserById,
 } from '../features/users/usersSlice'
+import AddTeamForm from '../features/teams/AddTeamForm'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -45,9 +54,11 @@ const useStyles = makeStyles((theme) => ({
 
 const AuthenticatedNav = ({ handleDrawerToggle }) => {
   const classes = useStyles()
-  const { user } = useAuth0()
+  const { user, logout } = useAuth0()
   const users = useSelector(selectAllUsers)
   const dispatch = useDispatch()
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [open, setOpen] = useState(false)
 
   // useEffect(() => {
   //   const { email, name, picture } = user
@@ -67,33 +78,60 @@ const AuthenticatedNav = ({ handleDrawerToggle }) => {
   //   }
   // }, [user])
 
+  const handleNewTeamClick = () => {
+    setAnchorEl(null)
+    setOpen(true)
+  }
+
+  const handleLogOutClick = () => {
+    setAnchorEl(null)
+    logout({ returnTo: window.location.origin })
+  }
+
   return (
-    <AppBar position="fixed" className={classes.appBar}>
-      <Toolbar>
-        <IconButton
-          edge="start"
-          color="inherit"
-          className={classes.menuButton}
-          aria-label="menu"
-          onClick={handleDrawerToggle}>
-          <MenuIcon />
-        </IconButton>
-        <Logo />
-        <SearchBar />
-        <div className={classes.grow} />
-        <div className={classes.sectionDesktop}>
-          {/* TODO */}
+    <React.Fragment>
+      <AppBar position="fixed" className={classes.appBar}>
+        <Toolbar>
           <IconButton
-            edge="end"
-            aria-label="account of current user"
-            aria-haspopup="true"
-            color="inherit">
-            <AccountCircle />
+            edge="start"
+            color="inherit"
+            className={classes.menuButton}
+            aria-label="menu"
+            onClick={handleDrawerToggle}>
+            <MenuIcon />
           </IconButton>
-          <LogoutButton />
-        </div>
-      </Toolbar>
-    </AppBar>
+          <Logo />
+          <SearchBar />
+          <div className={classes.grow} />
+          <div className={classes.sectionDesktop}>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={(e) => setAnchorEl(e.currentTarget)}>
+              <Avatar
+                alt="Shiyun Lu"
+                src="https://avatars2.githubusercontent.com/u/13009238?s=400&u=84c1659bae3d9b2c5c2974fd1ff561fe74396e5a&v=4"
+              />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={() => setAnchorEl(null)}>
+              <MenuItem onClick={handleNewTeamClick}>New Team</MenuItem>
+              <MenuItem
+                component={Link}
+                to={'/teams'}
+                onClick={() => setAnchorEl(null)}>
+                Teams
+              </MenuItem>
+              <MenuItem onClick={handleLogOutClick}>Log Out</MenuItem>
+            </Menu>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <AddTeamForm open={open} handleClose={() => setOpen(false)} />
+    </React.Fragment>
   )
 }
 

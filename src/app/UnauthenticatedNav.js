@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import LoginButton from '../features/users/LoginButton'
 import Logo from '../ui/Logo'
 
-const Nav = () => (
+const UnauthenticatedNav = () => (
   <AppBar position="fixed" elevation={0} color="transparent">
     <Toolbar style={{ justifyContent: 'space-between' }}>
       <Logo />
@@ -14,4 +14,4 @@ const Nav = () => (
   </AppBar>
 )
 
-export default Nav
+export default UnauthenticatedNav
