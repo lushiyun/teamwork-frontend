@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import QuillEditor from '../messages/QuillEditor'
 import { useSelector, useDispatch } from 'react-redux'
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    height: 'calc(100% - 60px)',
+    minHeight: 'calc(100% - 60px)',
   },
   msgList: {
     flexGrow: 1,
@@ -28,8 +28,13 @@ const TeamChat = () => {
   const { teamId } = useParams()
   const [channel, setChannel] = useState(null)
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
-  const dispatch = useDispatch()
 
+  const endRef = useRef(null)
+  useEffect(() => {
+    endRef.current.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchNewMessages(teamId))
   }, [teamId, dispatch])
@@ -72,6 +77,7 @@ const TeamChat = () => {
     <Container maxWidth="md" className={classes.root}>
       <List className={classes.msgList}>{renderedMessages()}</List>
       <QuillEditor sendMessage={sendMessage} />
+      <div ref={endRef} />
     </Container>
   )
 }

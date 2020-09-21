@@ -12,7 +12,7 @@ import TeamListItem from './TeamListItem'
 
 const TeamsList = () => {
   // Material UI styling helpers
-  const [selectedId, setSelectedId] = useState(null)
+  const [selectedId, setSelectedId] = useState(window.location.pathname.slice(7))
   const handleListItemClick = (e, id) => setSelectedId(id)
 
   const [open, setOpen] = useState(false)

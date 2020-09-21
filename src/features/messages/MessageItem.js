@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { parseJSON, format } from 'date-fns'
+import { parseJSON, formatDistanceToNow } from 'date-fns'
 import {
   ListItem,
   ListItemAvatar,
@@ -11,27 +11,18 @@ import {
 } from '@material-ui/core'
 
 import { selectUserById } from '../users/usersSlice'
-import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 import { Quill } from 'react-quill'
 
 const MessageItem = ({ message }) => {
   const user = useSelector((state) => selectUserById(state, message.userId))
-  const datetime = format(parseJSON(message.created_at), 'Pp')
-  // const deltaOps = message.content
-  // console.log(JSON.parse(message.content))
-  // const cfg = {}
-  // const converter = new QuillDeltaToHtmlConverter(
-  //   JSON.parse(message.content),
-  //   cfg
-  // )
-  // const html = converter.convert()
-  // console.log(html)
+  const timeAgo = formatDistanceToNow(parseJSON(message.created_at))
 
-  // const quillGetHTML = (deltaOps) => {
-  //   const temp = new Quill(document.createElement('div'))
-  //   temp.setContents(deltaOps)
-  //   return temp.root.innerHTML
-  // }
+  const deltaOps = JSON.parse(message.content)
+  const quillHtml = () => {
+    const temp = new Quill(document.createElement('div'))
+    temp.setContents(deltaOps)
+    return { __html: temp.root.innerHTML }
+  }
 
   return (
     <React.Fragment>
@@ -40,20 +31,26 @@ const MessageItem = ({ message }) => {
           <Avatar alt={user.name} src={user.picture_url} />
         </ListItemAvatar>
         <ListItemText
-          secondary={
+          primary={
             <React.Fragment>
               <Typography
-                component="body2"
+                component="span"
+                variant="body2"
                 color="textPrimary"
                 style={{ fontWeight: 'bold' }}>
                 {user.name}
               </Typography>
-              {`  | ${datetime}`}
+              <Typography
+                component="span"
+                variant="body2"
+                color="textSecondary">
+                {`  | ${timeAgo} ago`}
+              </Typography>
             </React.Fragment>
           }
+          secondary={<div dangerouslySetInnerHTML={quillHtml()}></div>}
         />
       </ListItem>
-      {JSON.parse(message.content).toString()}
       <Divider variant="inset" component="li" />
     </React.Fragment>
   )

@@ -10,14 +10,16 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 'inherit',
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     '& > *': {
       margin: theme.spacing(1),
     },
-    '& > #emoji-palette': {
-      bottom: theme.spacing(2),
+    '& #emoji-palette': {
+      top: '-310px !important',
     },
   },
 }))
