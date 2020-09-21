@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   ListItem,
   ListItemText,
@@ -13,12 +13,14 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { ActionCableContext } from '../../index'
 
-const TeamListItem = (props) => {
-  const { team, selectedId, handleMoreIconClick, handleListItemClick } = props
+const TeamListItem = ({ team, handleMoreIconClick }) => {
+  const location = useLocation()
+
   const [fontWeight, setFontWeight] = useState('fontWeightRegular')
   const [numOfUnreads, setNumOfUnreads] = useState(0)
 
   const cable = useContext(ActionCableContext)
+
   useEffect(() => {
     const channel = cable.subscriptions.create(
       { channel: 'UnreadsChannel', id: team.id },
@@ -37,19 +39,18 @@ const TeamListItem = (props) => {
   }, [team])
 
   useEffect(() => {
-    if (selectedId === team.id) {
+    if (location.pathname.slice(7) === team.id) {
       setFontWeight('fontWeightRegular')
       setNumOfUnreads(0)
     }
-  }, [selectedId])
+  }, [location])
 
   return (
     <ListItem
       component={Link}
       to={`/teams/${team.id}`}
       button
-      selected={selectedId === team.id}
-      onClick={(e) => handleListItemClick(e, team.id)}>
+      selected={location.pathname.slice(7) === team.id}>
       <Badge badgeContent={numOfUnreads} color="primary">
         <Avatar
           variant="rounded"

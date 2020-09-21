@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
+import { useHistory } from 'react-router-dom'
 
 import { Menu, MenuItem } from '@material-ui/core'
 
@@ -9,20 +10,7 @@ import { setSnackbar } from '../../ui/snackbarSlice'
 
 const TeamsListMenu = (props) => {
   const { clickedTeam, anchorEl, setAnchorEl, setOpen } = props
-
-  // snackbar helpers
-  const serverError = {
-    open: true,
-    type: 'error',
-    message: 'Server busy, try again later',
-  }
-
-  const successMessage = {
-    open: true,
-    type: 'success',
-    message: `Left ${clickedTeam && clickedTeam.name} successfully`,
-  }
-
+  const history = useHistory()
   const dispatch = useDispatch()
   const [leaveRequestStatus, setLeaveRequestStatus] = useState('idle')
 
@@ -40,7 +28,8 @@ const TeamsListMenu = (props) => {
           })
         )
         unwrapResult(resultAction)
-        dispatch(setSnackbar(successMessage))
+        history.push('/teams')
+        dispatch(setSnackbar(successMessage(clickedTeam.name)))
       } catch (err) {
         console.error('Failed to save the team: ', err)
         setLeaveRequestStatus('failed')
@@ -73,5 +62,18 @@ const TeamsListMenu = (props) => {
     </Menu>
   )
 }
+
+// snackbar helpers
+const serverError = {
+  open: true,
+  type: 'error',
+  message: 'Server busy, try again later',
+}
+
+const successMessage = (name) => ({
+  open: true,
+  type: 'success',
+  message: `Left ${name} successfully`,
+})
 
 export default TeamsListMenu
