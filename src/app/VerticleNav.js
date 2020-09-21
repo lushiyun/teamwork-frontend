@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
-import { Hidden, Drawer } from '@material-ui/core'
+import { Hidden, Drawer, Typography, Link, Toolbar } from '@material-ui/core'
 import TeamsList from '../features/teams/TeamsList'
 
 export const drawerWidth = 300
@@ -16,15 +16,42 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  footer: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+    position: 'fixed',
+    left: 0,
+    bottom: 0,
+  },
 }))
 
-const TeamsDrawer = ({ handleDrawerToggle, container, open }) => {
+const VerticalNav = ({ handleDrawerToggle, container, open }) => {
   const classes = useStyles()
   const theme = useTheme()
+
+  const footer = (
+    <Toolbar className={classes.footer}>
+      <Typography variant="body2" color="textSecondary" align="center">
+        {'Copyright © '}
+        <Link
+          color="inherit"
+          target="_blank"
+          rel="noopener"
+          href="https://medium.com/@lushiyun">
+          Shiyun Lu
+        </Link>{' '}
+        {new Date().getFullYear()}
+        {'.'}
+      </Typography>
+    </Toolbar>
+  )
 
   const drawerContent = (
     <div className={classes.toolbar}>
       <TeamsList />
+      {footer}
     </div>
   )
 
@@ -57,4 +84,4 @@ const TeamsDrawer = ({ handleDrawerToggle, container, open }) => {
   )
 }
 
-export default TeamsDrawer
+export default VerticalNav

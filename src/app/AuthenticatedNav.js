@@ -10,7 +10,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import SearchBar from '../ui/SearchBar'
 import LogoutButton from '../features/users/LogoutButton'
 import Logo from '../ui/Logo'
-import { drawerWidth } from './TeamsDrawer'
+import { drawerWidth } from './VerticleNav'
 import {
   selectAllUsers,
   currentUserAdded,

@@ -8,7 +8,7 @@ import { fetchTeams } from './features/teams/teamsSlice'
 
 import Nav from './app/Nav'
 import AuthenticatedNav from './app/AuthenticatedNav'
-import TeamsDrawer from './app/TeamsDrawer'
+import VerticleNav from './app/VerticleNav'
 import LandingPage from './app/LandingPage'
 import LoadingBackdrop from './app/LoadingBackdrop'
 import TeamsGrid from './features/teams/TeamsGrid'
@@ -67,7 +67,7 @@ const App = (props) => {
       {!isAuthenticated && (
         <div style={{ display: 'flex' }}>
           <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
-          <TeamsDrawer
+          <VerticleNav
             handleDrawerToggle={handleDrawerToggle}
             container={container}
             open={open}
