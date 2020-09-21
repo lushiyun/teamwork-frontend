@@ -1,3 +1,6 @@
+import React from 'react'
+import { useSelector } from 'react-redux'
+
 import {
   Dialog,
   DialogTitle,
@@ -13,8 +16,6 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { selectUsersByTeam } from '../users/usersSlice'
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +31,7 @@ const TeamShowPage = ({ open, handleClose, team, handleJoin }) => {
   const classes = useStyles()
   const members = useSelector((state) => selectUsersByTeam(state, team.id))
 
-  const renderedMembers = () =>
+  const renderedMembers =
     members &&
     members.map((member) => (
       <GridListTile key={member.id}>
@@ -60,7 +61,7 @@ const TeamShowPage = ({ open, handleClose, team, handleJoin }) => {
                 {members.length} members
               </ListSubheader>
             </GridListTile>
-            {renderedMembers()}
+            {renderedMembers}
           </GridList>
         </div>
       </DialogContent>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { unwrapResult } from '@reduxjs/toolkit'
 
 import {
   Dialog,
@@ -16,7 +17,6 @@ import TeamDetailsStep from './TeamDetailsStep'
 import TeamCoverStep from './TeamCoverStep'
 import TeamMembersStep from './TeamMembersStep'
 import { addNewTeam } from './teamsSlice'
-import { unwrapResult } from '@reduxjs/toolkit'
 import { setSnackbar } from '../../ui/snackbarSlice'
 
 const stepTitles = ['Some quick details', 'Select a cover', 'Add team members']
@@ -57,24 +57,6 @@ const AddTeamForm = ({ open, handleClose }) => {
     handleClose()
   }
 
-  const incompleteFormError = {
-    open: true,
-    type: 'error',
-    message: 'You must enter name, description and cover image',
-  }
-  
-  const serverError = {
-    open: true,
-    type: 'error',
-    message: 'Server busy, try again later',
-  }
-  
-  const successMessage = {
-    open: true,
-    type: 'success',
-    message: `Created ${name} successfully`,
-  }
-
   const dispatch = useDispatch()
   const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
@@ -90,7 +72,7 @@ const AddTeamForm = ({ open, handleClose }) => {
           addNewTeam({ name, description, cover_url: cover, user_ids: members })
         )
         unwrapResult(resultAction)
-        dispatch(setSnackbar(successMessage))
+        dispatch(setSnackbar(successMessage(name)))
       } catch (err) {
         setAddRequestStatus('failed')
         console.error('Failed to save the team: ', err)
@@ -128,11 +110,8 @@ const AddTeamForm = ({ open, handleClose }) => {
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleDialogClose}
-      aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Create your team</DialogTitle>
+    <Dialog open={open} onClose={handleDialogClose}>
+      <DialogTitle>Create your team</DialogTitle>
       <DialogContent>
         <Stepper activeStep={activeStep}>
           {stepTitles.map((label) => (
@@ -158,5 +137,24 @@ const AddTeamForm = ({ open, handleClose }) => {
     </Dialog>
   )
 }
+
+// snackbar helpers
+const incompleteFormError = {
+  open: true,
+  type: 'error',
+  message: 'You must enter name, description and cover image',
+}
+
+const serverError = {
+  open: true,
+  type: 'error',
+  message: 'Server busy, try again later',
+}
+
+const successMessage = (name) => ({
+  open: true,
+  type: 'success',
+  message: `Created ${name} successfully`,
+})
 
 export default AddTeamForm

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+
 import { Grid, Fab, Tooltip } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import { makeStyles } from '@material-ui/core/styles'
@@ -28,19 +29,18 @@ const TeamsGrid = () => {
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
-  const renderedTeamCards = () => teams.map((team) => <TeamCard team={team} key={team.id} />)
+  const renderedTeamCards = teams.map((team) => (
+    <TeamCard team={team} key={team.id} />
+  ))
 
   return (
     <div className={classes.root}>
       <Grid container spacing={2} alignItems="stretch">
-        {renderedTeamCards()}
+        {renderedTeamCards}
       </Grid>
       <div className={classes.addFab}>
-        <Tooltip title="Create a team" aria-label="create">
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={handleClickOpen}>
+        <Tooltip title="Create a team">
+          <Fab color="primary" onClick={handleClickOpen}>
             <AddIcon />
           </Fab>
         </Tooltip>

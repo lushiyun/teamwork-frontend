@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+
 import {
   TextField,
   GridList,
@@ -60,6 +61,18 @@ const TeamCoverStep = ({ cover, handleCoverChange }) => {
   const [results, setResults] = useState([])
   const [initialImgs, setInitialImgs] = useState([])
 
+  // set initial images
+  useEffect(() => {
+    const search = async () => {
+      const { data } = await unsplash.get('search/photos', {
+        params: { query: 'teamwork' },
+      })
+      setInitialImgs(data.results)
+    }
+    search()
+  }, [])
+
+  // Fetch API 500 ms after user stops typing
   useEffect(() => {
     const search = async () => {
       const { data } = await unsplash.get('search/photos', {
@@ -76,16 +89,6 @@ const TeamCoverStep = ({ cover, handleCoverChange }) => {
       clearTimeout(timeoutId)
     }
   }, [query])
-
-  useEffect(() => {
-    const search = async () => {
-      const { data } = await unsplash.get('search/photos', {
-        params: { query: 'teamwork' },
-      })
-      setInitialImgs(data.results)
-    }
-    search()
-  }, [])
 
   const renderedImgList = () => {
     const data = results.length === 0 ? initialImgs : results

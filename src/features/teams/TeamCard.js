@@ -1,3 +1,7 @@
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { unwrapResult } from '@reduxjs/toolkit'
+
 import {
   Grid,
   Card,
@@ -9,10 +13,6 @@ import {
   Button,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core'
-
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { unwrapResult } from '@reduxjs/toolkit'
 
 import { updateTeamMember } from './teamsSlice'
 import { setSnackbar } from '../../ui/snackbarSlice'
@@ -34,34 +34,15 @@ const TeamCard = ({ team }) => {
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
-  const alreadyJoinedError = {
-    open: true,
-    type: 'error',
-    message: 'You are already in this team',
-  }
-  
-  const serverError = {
-    open: true,
-    type: 'error',
-    message: 'Server busy, try again later',
-  }
-  
-  const successMessage = {
-    open: true,
-    type: 'success',
-    message: `Joined ${team.name} successfully`,
-  }
-
   const dispatch = useDispatch()
   const [joinRequestStatus, setJoinRequestStatus] = useState('idle')
 
   const handleJoin = async () => {
-    if (team.userIds.includes('45')) {
-      dispatch(setSnackbar(alreadyJoinedError))
-    } else if (joinRequestStatus !== 'idle') {
+    if (joinRequestStatus !== 'idle') {
       dispatch(setSnackbar(serverError))
     } else {
       try {
+        setJoinRequestStatus('pending')
         const updatedMembers = team.userIds.concat('45')
         const resultAction = await dispatch(
           updateTeamMember({
@@ -70,9 +51,10 @@ const TeamCard = ({ team }) => {
           })
         )
         unwrapResult(resultAction)
-        dispatch(setSnackbar(successMessage))
+        dispatch(setSnackbar(successMessage(team.name)))
       } catch (err) {
         console.error('Failed to save the team: ', err)
+        setJoinRequestStatus('failed')
       } finally {
         setJoinRequestStatus('idle')
       }
@@ -104,9 +86,11 @@ const TeamCard = ({ team }) => {
             </CardContent>
           </CardActionArea>
           <CardActions>
-            <Button size="small" color="primary" onClick={handleJoin}>
-              Join
-            </Button>
+            {!team.userIds.includes('45') && (
+              <Button size="small" color="primary" onClick={handleJoin}>
+                Join
+              </Button>
+            )}
             <Button size="small" color="primary" onClick={handleClickOpen}>
               Learn More
             </Button>
@@ -123,5 +107,18 @@ const TeamCard = ({ team }) => {
     </React.Fragment>
   )
 }
+
+// snackbar helpers
+const serverError = {
+  open: true,
+  type: 'error',
+  message: 'Server busy, try again later',
+}
+
+const successMessage = (name) => ({
+  open: true,
+  type: 'success',
+  message: `Joined ${name} successfully`,
+})
 
 export default TeamCard

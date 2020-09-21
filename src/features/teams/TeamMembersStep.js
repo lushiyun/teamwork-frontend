@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { selectAllUsers } from '../users/usersSlice'
 
 import {
   Avatar,
@@ -11,6 +10,8 @@ import {
   Grid,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+
+import { selectAllUsers } from '../users/usersSlice'
 
 const useStyles = makeStyles((theme) => ({
   large: {
@@ -45,38 +46,36 @@ const TeamMembersStep = ({ members, handleMemberChange }) => {
     setResults(searchedUsers)
   }, [query])
 
-  const renderedUsers = () =>
-    results.map((user) => (
-      <Grid item key={user.id} className={classes.gridItem}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={members.includes(user.id)}
-              onChange={() => handleMemberChange(user.id)}
-              name={user.id}
-              color="primary"
+  const renderedUsers = results.map((user) => (
+    <Grid item key={user.id} className={classes.gridItem}>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={members.includes(user.id)}
+            onChange={() => handleMemberChange(user.id)}
+            name={user.id}
+            color="primary"
+          />
+        }
+        label={
+          <div>
+            <Avatar
+              src={user.picture_url}
+              alt={user.name}
+              className={classes.large}
             />
-          }
-          label={
-            <div>
-              <Avatar
-                src={user.picture_url}
-                alt={user.name}
-                className={classes.large}
-              />
-              <Typography variant="caption">{user.name}</Typography>
-            </div>
-          }
-          labelPlacement="top"
-        />
-      </Grid>
-    ))
+            <Typography variant="caption">{user.name}</Typography>
+          </div>
+        }
+        labelPlacement="top"
+      />
+    </Grid>
+  ))
 
   return (
     <React.Fragment>
       <TextField
         autoFocus
-        id="search-query-input"
         label="Search all users"
         placeholder="Select users for your team or search by their names"
         margin="normal"
@@ -85,7 +84,7 @@ const TeamMembersStep = ({ members, handleMemberChange }) => {
         onChange={(e) => setQuery(e.target.value)}
       />
       <Grid container spacing={2} className={classes.gridContainer}>
-        {renderedUsers()}
+        {renderedUsers}
       </Grid>
     </React.Fragment>
   )
