@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+
 import {
   ListItem,
   ListItemText,
@@ -11,6 +12,7 @@ import {
   Badge,
 } from '@material-ui/core'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
+
 import { ActionCableContext } from '../../index'
 
 const TeamListItem = ({ team, handleMoreIconClick }) => {

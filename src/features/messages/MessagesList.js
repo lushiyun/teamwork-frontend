@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+
 import { List, Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -53,7 +54,7 @@ const MessagesList = () => {
       },
       {
         received: (data) => {
-          receiveMessage(data)
+          dispatch(messageReceived(JSON.parse(data)))
         },
       }
     )
@@ -68,11 +69,7 @@ const MessagesList = () => {
     channel.send(data)
   }
 
-  const receiveMessage = (data) => {
-    dispatch(messageReceived(JSON.parse(data)))
-  }
-
-  const renderedMessages = () =>
+  const renderedMessages =
     messages &&
     messages.map((message) => (
       <MessageItem key={message.id} message={message} />
@@ -80,7 +77,7 @@ const MessagesList = () => {
 
   return (
     <Container maxWidth="md" className={classes.root}>
-      <List className={classes.msgList}>{renderedMessages()}</List>
+      <List className={classes.msgList}>{renderedMessages}</List>
       <QuillEditor sendMessage={sendMessage} />
       <div ref={endRef} />
     </Container>

@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react'
+
 import ReactQuill, { Quill } from 'react-quill'
 import quillEmoji from 'quill-emoji'
 import 'react-quill/dist/quill.snow.css'
 import 'quill-emoji/dist/quill-emoji.css'
+
 import { Paper, IconButton } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
 import { makeStyles } from '@material-ui/core/styles'
