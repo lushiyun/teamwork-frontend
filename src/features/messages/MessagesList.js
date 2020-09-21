@@ -14,6 +14,7 @@ import {
 import { ActionCableContext } from '../../index'
 import MessageItem from './MessageItem'
 import QuillEditor from './QuillEditor'
+import TeamTabs from '../../app/TeamTabs'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,6 +78,7 @@ const MessagesList = () => {
 
   return (
     <Container maxWidth="md" className={classes.root}>
+      <TeamTabs />
       <List className={classes.msgList}>{renderedMessages}</List>
       <QuillEditor sendMessage={sendMessage} />
       <div ref={endRef} />
