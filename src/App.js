@@ -14,7 +14,7 @@ import LoadingBackdrop from './app/LoadingBackdrop'
 import TeamsGrid from './features/teams/TeamsGrid'
 import AuthenticatedRoute from './AuthenticatedRoute'
 import GlobalSnackbar from './ui/GlobalSnackbar'
-import TeamChat from './features/teams/TeamChat'
+import MessagesList from './features/messages/MessagesList'
 import { fetchUsers } from './features/users/usersSlice'
 
 const useStyles = makeStyles((theme) => ({
@@ -76,7 +76,7 @@ const App = (props) => {
             <div className={classes.toolbar} />
             <Switch>
               <Route exact path="/teams" component={TeamsGrid} />
-              <Route path="/teams/:teamId" children={<TeamChat />} />
+              <Route path="/teams/:teamId" children={<MessagesList />} />
             </Switch>
           </main>
         </div>

@@ -38,20 +38,29 @@ const messagesSlice = createSlice({
       const message = {
         id: data.id,
         ...data.attributes,
+        read: false,
         teamId: data.relationships.team.data.id,
         userId: data.relationships.user.data.id,
       }
       messagesAdapter.addOne(state, message)
     },
+    allMessagesRead(state, action) {
+      Object.values(state.entities).forEach((message) => {
+        message.read = true
+      })
+    },
   },
   extraReducers: {
     [fetchNewMessages.fulfilled]: (state, action) => {
+      Object.values(state.entities).forEach((message) => {
+        message.isNew = !message.read
+      })
       messagesAdapter.upsertMany(state, action.payload)
     },
   },
 })
 
-export const { messageReceived } = messagesSlice.actions
+export const { messageReceived, allMessagesRead } = messagesSlice.actions
 
 export default messagesSlice.reducer
 

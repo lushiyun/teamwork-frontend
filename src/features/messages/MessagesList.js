@@ -1,16 +1,18 @@
 import React, { useEffect, useContext, useState, useRef } from 'react'
-import { useParams } from 'react-router-dom'
-import QuillEditor from '../messages/QuillEditor'
 import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { List, Container } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+
 import {
   fetchNewMessages,
   selectMessagesByTeam,
   messageReceived,
-} from '../messages/messagesSlice'
-import MessageItem from '../messages/MessageItem'
-import { List, Container } from '@material-ui/core'
+  allMessagesRead,
+} from './messagesSlice'
 import { ActionCableContext } from '../../index'
-import { makeStyles } from '@material-ui/core/styles'
+import MessageItem from './MessageItem'
+import QuillEditor from './QuillEditor'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,8 +25,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const TeamChat = () => {
+const MessagesList = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const { teamId } = useParams()
   const [channel, setChannel] = useState(null)
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
@@ -34,9 +37,11 @@ const TeamChat = () => {
     endRef.current.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchNewMessages(teamId))
+    return () => {
+      dispatch(allMessagesRead())
+    }
   }, [teamId, dispatch])
 
   const cable = useContext(ActionCableContext)
@@ -82,4 +87,4 @@ const TeamChat = () => {
   )
 }
 
-export default TeamChat
+export default MessagesList

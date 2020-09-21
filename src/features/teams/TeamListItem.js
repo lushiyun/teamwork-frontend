@@ -8,6 +8,7 @@ import {
   IconButton,
   Typography,
   Box,
+  Badge,
 } from '@material-ui/core'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { ActionCableContext } from '../../index'
@@ -15,6 +16,7 @@ import { ActionCableContext } from '../../index'
 const TeamListItem = (props) => {
   const { team, selectedId, handleMoreIconClick, handleListItemClick } = props
   const [fontWeight, setFontWeight] = useState('fontWeightRegular')
+  const [numOfUnreads, setNumOfUnreads] = useState(0)
 
   const cable = useContext(ActionCableContext)
   useEffect(() => {
@@ -22,8 +24,9 @@ const TeamListItem = (props) => {
       { channel: 'UnreadsChannel', id: team.id },
       {
         received: () => {
-          if (selectedId !== team.id) {
+          if (window.location.pathname.slice(7) !== team.id) {
             setFontWeight('fontWeightBold')
+            setNumOfUnreads((prev) => prev + 1)
           }
         },
       }
@@ -36,6 +39,7 @@ const TeamListItem = (props) => {
   useEffect(() => {
     if (selectedId === team.id) {
       setFontWeight('fontWeightRegular')
+      setNumOfUnreads(0)
     }
   }, [selectedId])
 
@@ -46,12 +50,14 @@ const TeamListItem = (props) => {
       button
       selected={selectedId === team.id}
       onClick={(e) => handleListItemClick(e, team.id)}>
-      <Avatar
-        variant="rounded"
-        src={team.cover_url}
-        alt={team.name}
-        style={{ marginRight: '1rem' }}
-      />
+      <Badge badgeContent={numOfUnreads} color="primary">
+        <Avatar
+          variant="rounded"
+          src={team.cover_url}
+          alt={team.name}
+          style={{ marginRight: '1rem' }}
+        />
+      </Badge>
       <ListItemText
         primary={
           <Typography>
