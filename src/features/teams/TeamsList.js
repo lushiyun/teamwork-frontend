@@ -17,7 +17,8 @@ const TeamsList = () => {
   const [anchorEl, setAnchorEl] = useState(null)
   // Material UI styling helpers
 
-  const teams = useSelector((state) => selectTeamsByUser(state, '45'))
+  const currentUserId = useSelector((state) => state.users.currentUser)
+  const teams = useSelector((state) => selectTeamsByUser(state, currentUserId))
   const [clickedTeam, setClickedTeam] = useState(null)
   const handleMoreIconClick = (e, team) => {
     setAnchorEl(e.currentTarget)

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 
 import {
@@ -34,16 +34,18 @@ const TeamCard = ({ team }) => {
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
-  const dispatch = useDispatch()
-  const [joinRequestStatus, setJoinRequestStatus] = useState('idle')
+  const currentUserId = useSelector((state) => state.users.currentUser)
 
+  const dispatch = useDispatch()
+
+  const [joinRequestStatus, setJoinRequestStatus] = useState('idle')
   const handleJoin = async () => {
     if (joinRequestStatus !== 'idle') {
       dispatch(setSnackbar(serverError))
     } else {
       try {
         setJoinRequestStatus('pending')
-        const updatedMembers = team.userIds.concat('45')
+        const updatedMembers = team.userIds.concat(currentUserId)
         const resultAction = await dispatch(
           updateTeamMember({
             id: team.id,
@@ -86,7 +88,7 @@ const TeamCard = ({ team }) => {
             </CardContent>
           </CardActionArea>
           <CardActions>
-            {!team.userIds.includes('45') && (
+            {!team.userIds.includes(currentUserId) && (
               <Button size="small" color="primary" onClick={handleJoin}>
                 Join
               </Button>

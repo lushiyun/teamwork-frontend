@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useHistory } from 'react-router-dom'
 
@@ -10,17 +10,21 @@ import { setSnackbar } from '../../ui/snackbarSlice'
 
 const TeamsListMenu = (props) => {
   const { clickedTeam, anchorEl, setAnchorEl, setOpen } = props
+  const currentUserId = useSelector((state) => state.users.currentUser)
   const history = useHistory()
-  const dispatch = useDispatch()
-  const [leaveRequestStatus, setLeaveRequestStatus] = useState('idle')
 
+  const dispatch = useDispatch()
+
+  const [leaveRequestStatus, setLeaveRequestStatus] = useState('idle')
   const handleLeaveClick = async () => {
     if (leaveRequestStatus !== 'idle') {
       dispatch(setSnackbar(serverError))
     } else {
       try {
         setLeaveRequestStatus('pending')
-        const updatedMembers = clickedTeam.userIds.filter((id) => id !== '45')
+        const updatedMembers = clickedTeam.userIds.filter(
+          (id) => id !== currentUserId
+        )
         const resultAction = await dispatch(
           updateTeamMember({
             id: clickedTeam.id,

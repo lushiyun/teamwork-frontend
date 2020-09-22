@@ -4,11 +4,24 @@ import {
   createAsyncThunk,
   createSelector,
 } from '@reduxjs/toolkit'
+import { isAfter } from 'date-fns'
 import teamwork from '../../api/teamwork'
+import { selectTeamById } from '../teams/teamsSlice'
 
 const messagesAdapter = createEntityAdapter()
 
-const initialState = messagesAdapter.getInitialState()
+const initialState = messagesAdapter.getInitialState({
+  status: 'idle',
+  error: null,
+})
+
+export const fetchUserAllMessages = createAsyncThunk(
+  'messages/fetchUserAllMessages',
+  async (userId) => {
+    const response = await teamwork.get(`/messages/${userId}`)
+    return response.data.data.map((msg) => ({ id: msg.id, ...msg.attributes }))
+  }
+)
 
 export const fetchNewMessages = createAsyncThunk(
   'messages/fetchNewMessages',
@@ -38,29 +51,36 @@ const messagesSlice = createSlice({
       const message = {
         id: data.id,
         ...data.attributes,
-        read: false,
         teamId: data.relationships.team.data.id,
         userId: data.relationships.user.data.id,
       }
       messagesAdapter.addOne(state, message)
     },
-    allMessagesRead(state, action) {
-      Object.values(state.entities).forEach((message) => {
-        message.read = true
-      })
-    },
+    // allMessagesRead(state, action) {
+    //   Object.values(state.entities).forEach((message) => {
+    //     message.read = true
+    //   })
+    // },
   },
   extraReducers: {
+    [fetchUserAllMessages.pending]: (state, action) => {
+      state.status = 'loading'
+    },
+    [fetchUserAllMessages.fulfilled]: (state, action) => {
+      state.status = 'succeeded'
+      messagesAdapter.setAll(state, action.payload)
+    },
+    [fetchUserAllMessages.rejected]: (state, action) => {
+      state.status = 'failed'
+      state.error = action.payload
+    },
     [fetchNewMessages.fulfilled]: (state, action) => {
-      Object.values(state.entities).forEach((message) => {
-        message.isNew = !message.read
-      })
       messagesAdapter.upsertMany(state, action.payload)
     },
   },
 })
 
-export const { messageReceived, allMessagesRead } = messagesSlice.actions
+export const { messageReceived } = messagesSlice.actions
 
 export default messagesSlice.reducer
 
@@ -72,4 +92,10 @@ export const {
 export const selectMessagesByTeam = createSelector(
   [selectAllMessages, (state, teamId) => teamId],
   (messages, teamId) => messages.filter((message) => message.teamId === teamId)
+)
+
+export const selectUnreadMessages = createSelector(
+  [selectMessagesByTeam, selectTeamById],
+  (messages, team) =>
+    messages.filter((message) => isAfter(team.last_read_at, message.created_at))
 )

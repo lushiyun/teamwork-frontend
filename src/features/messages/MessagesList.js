@@ -9,7 +9,6 @@ import {
   fetchNewMessages,
   selectMessagesByTeam,
   messageReceived,
-  allMessagesRead,
 } from './messagesSlice'
 import { ActionCableContext } from '../../index'
 import MessageItem from './MessageItem'
@@ -28,10 +27,12 @@ const useStyles = makeStyles((theme) => ({
 
 const MessagesList = () => {
   const classes = useStyles()
-  const dispatch = useDispatch()
-  const { teamId } = useParams()
   const [channel, setChannel] = useState(null)
+  const { teamId } = useParams()
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
+  const currentUserId = useSelector((state) => state.users.currentUser)
+
+  const dispatch = useDispatch()
 
   const endRef = useRef(null)
   useEffect(() => {
@@ -40,9 +41,6 @@ const MessagesList = () => {
 
   useEffect(() => {
     dispatch(fetchNewMessages(teamId))
-    return () => {
-      dispatch(allMessagesRead())
-    }
   }, [teamId, dispatch])
 
   const cable = useContext(ActionCableContext)
@@ -65,7 +63,7 @@ const MessagesList = () => {
   }, [teamId])
 
   const sendMessage = (content) => {
-    const data = { teamId, userId: '45', content }
+    const data = { teamId, userId: currentUserId, content }
     channel.send(data)
   }
 

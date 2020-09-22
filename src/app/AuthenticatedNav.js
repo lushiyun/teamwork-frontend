@@ -14,7 +14,6 @@ import {
 import MenuIcon from '@material-ui/icons/Menu'
 
 import SearchBar from '../ui/SearchBar'
-import LogoutButton from '../features/users/LogoutButton'
 import Logo from '../ui/Logo'
 import { drawerWidth } from './VerticleNav'
 import {
@@ -25,6 +24,7 @@ import {
 } from '../features/users/usersSlice'
 import AddTeamForm from '../features/teams/AddTeamForm'
 import { Link } from 'react-router-dom'
+import { fetchUserAllMessages } from '../features/messages/messagesSlice'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -60,23 +60,29 @@ const AuthenticatedNav = ({ handleDrawerToggle }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [open, setOpen] = useState(false)
 
-  // useEffect(() => {
-  //   const { email, name, picture } = user
-  //   const existingUser = users.find((user) => user.email === email)
-  //   console.log(existingUser)
-  //   if (existingUser) {
-  //     dispatch(currentUserAdded(existingUser.id))
-  //   } else {
-  //     const addCurrentUser = async () => {
-  //       const resultAction = await dispatch(
-  //         addNewUser({ email, name, picture_url: picture })
-  //       )
-  //       const newUser = unwrapResult(resultAction)
-  //       dispatch(currentUserAdded(newUser.id))
-  //     }
-  //     addCurrentUser()
-  //   }
-  // }, [user])
+  useEffect(() => {
+    const { email, name, picture } = user
+    const existingUser = users.find((user) => user.email === email)
+    if (existingUser) {
+      dispatch(currentUserAdded(existingUser.id))
+      const fetchMessagesForUser = async () => {
+        await dispatch(
+          fetchUserAllMessages(existingUser.id)
+        )
+      }
+      fetchMessagesForUser()
+
+    } else {
+      const addCurrentUser = async () => {
+        const resultAction = await dispatch(
+          addNewUser({ email, name, picture_url: picture })
+        )
+        const newUser = unwrapResult(resultAction)
+        dispatch(currentUserAdded(newUser.id))
+      }
+      addCurrentUser()
+    }
+  }, [user])
 
   const handleNewTeamClick = () => {
     setAnchorEl(null)

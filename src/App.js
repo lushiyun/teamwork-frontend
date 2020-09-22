@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { fetchTeams } from './features/teams/teamsSlice'
 
-import Nav from './app/UnauthenticatedNav'
+import UnauthenticatedNav from './app/UnauthenticatedNav'
 import AuthenticatedNav from './app/AuthenticatedNav'
 import VerticleNav from './app/VerticleNav'
 import LandingPage from './app/LandingPage'
@@ -55,16 +55,16 @@ const App = (props) => {
     }
   }, [usersStatus, dispatch])
 
-  if (teamsStatus === 'loading' || usersStatus === 'loading') {
+  if (teamsStatus === 'loading' || usersStatus === 'loading' || isLoading) {
     return <LoadingBackdrop />
   }
 
-  // if (teamsStatus === 'error') 
+  // if (teamsStatus === 'error')
 
   return (
     <React.Fragment>
       <GlobalSnackbar />
-      {!isAuthenticated && (
+      {isAuthenticated && (
         <div style={{ display: 'flex' }}>
           <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
           <VerticleNav
@@ -82,12 +82,12 @@ const App = (props) => {
         </div>
       )}
 
-      {/* {!isAuthenticated && (
+      {!isAuthenticated && (
         <div style={{ height: '100vh' }}>
-          <Nav />
+          <UnauthenticatedNav />
           <Route exact path="/" component={LandingPage} />
         </div>
-      )} */}
+      )}
     </React.Fragment>
   )
 }

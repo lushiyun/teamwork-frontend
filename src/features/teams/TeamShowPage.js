@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const TeamShowPage = ({ open, handleClose, team, handleJoin }) => {
   const classes = useStyles()
   const members = useSelector((state) => selectUsersByTeam(state, team.id))
+  const currentUserId = useSelector((state) => state.users.currentUser)
 
   const renderedMembers =
     members &&
@@ -68,7 +69,7 @@ const TeamShowPage = ({ open, handleClose, team, handleJoin }) => {
       <DialogActions
         style={{ paddingRight: '1.5rem', paddingBottom: '1.5rem' }}>
         <Button onClick={handleClose}>close</Button>
-        {!team.userIds.includes('45') && (
+        {!team.userIds.includes(currentUserId) && (
           <Button variant="contained" color="primary" onClick={handleJoin}>
             Join
           </Button>
