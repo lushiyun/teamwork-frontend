@@ -17,9 +17,18 @@ const initialState = messagesAdapter.getInitialState({
 
 export const fetchUserAllMessages = createAsyncThunk(
   'messages/fetchUserAllMessages',
-  async (userId) => {
-    const response = await teamwork.get(`/messages/${userId}`)
-    return response.data.data.map((msg) => ({ id: msg.id, ...msg.attributes }))
+  async (currentUserId) => {
+    const response = await teamwork.get(`/messages/${currentUserId}`)
+    return response.data.data.map((message) => {
+      const teamId = message.relationships.team.data.id
+      const userId = message.relationships.user.data.id
+      return {
+        id: message.id,
+        ...message.attributes,
+        teamId,
+        userId,
+      }
+    })
   }
 )
 
@@ -97,5 +106,5 @@ export const selectMessagesByTeam = createSelector(
 export const selectUnreadMessages = createSelector(
   [selectMessagesByTeam, selectTeamById],
   (messages, team) =>
-    messages.filter((message) => isAfter(team.last_read_at, message.created_at))
+    messages.filter((message) => isAfter(team.lastReadAt, message.created_at))
 )

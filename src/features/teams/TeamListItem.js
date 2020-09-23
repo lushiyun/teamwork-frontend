@@ -15,20 +15,21 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 
 import { ActionCableContext } from '../../index'
-import { selectUnreadMessages } from '../messages/messagesSlice'
+import { selectMessagesByTeam, selectUnreadMessages } from '../messages/messagesSlice'
 
 const TeamListItem = ({ team, handleMoreIconClick }) => {
   const location = useLocation()
+  const messages = useSelector((state) => selectMessagesByTeam(state, team.id))
 
   const [fontWeight, setFontWeight] = useState('fontWeightRegular')
-  const [numOfUnreads, setNumOfUnreads] = useState(0)
+  const [numOfUnreads, setNumOfUnreads] = useState(messages.length)
 
-  const unreadMessages = useSelector((state) =>
-    selectUnreadMessages(state, team.id)
-  )
-  useEffect(() => {
-    setNumOfUnreads(unreadMessages.length)
-  }, [])
+  console.log(messages)
+  console.log(numOfUnreads)
+
+  // useEffect(() => {
+  //   setNumOfUnreads(messages.length)
+  // }, [])
 
   const cable = useContext(ActionCableContext)
   useEffect(() => {

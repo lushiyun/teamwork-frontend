@@ -15,7 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 
 import SearchBar from '../ui/SearchBar'
 import Logo from '../ui/Logo'
-import { drawerWidth } from './VerticleNav'
+import { drawerWidth } from './VerticalNav'
 import {
   selectAllUsers,
   currentUserAdded,
@@ -60,29 +60,29 @@ const AuthenticatedNav = ({ handleDrawerToggle }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [open, setOpen] = useState(false)
 
-  useEffect(() => {
-    const { email, name, picture } = user
-    const existingUser = users.find((user) => user.email === email)
-    if (existingUser) {
-      dispatch(currentUserAdded(existingUser.id))
-      const fetchMessagesForUser = async () => {
-        await dispatch(
-          fetchUserAllMessages(existingUser.id)
-        )
-      }
-      fetchMessagesForUser()
+  // useEffect(() => {
+  //   const { email, name, picture } = user
+  //   const existingUser = users.find((user) => user.email === email)
+  //   if (existingUser) {
+  //     dispatch(currentUserAdded(existingUser.id))
+  //     const fetchMessagesForUser = async () => {
+  //       await dispatch(
+  //         fetchUserAllMessages(existingUser.id)
+  //       )
+  //     }
+  //     fetchMessagesForUser()
 
-    } else {
-      const addCurrentUser = async () => {
-        const resultAction = await dispatch(
-          addNewUser({ email, name, picture_url: picture })
-        )
-        const newUser = unwrapResult(resultAction)
-        dispatch(currentUserAdded(newUser.id))
-      }
-      addCurrentUser()
-    }
-  }, [user])
+  //   } else {
+  //     const addCurrentUser = async () => {
+  //       const resultAction = await dispatch(
+  //         addNewUser({ email, name, picture_url: picture })
+  //       )
+  //       const newUser = unwrapResult(resultAction)
+  //       dispatch(currentUserAdded(newUser.id))
+  //     }
+  //     addCurrentUser()
+  //   }
+  // }, [user])
 
   const handleNewTeamClick = () => {
     setAnchorEl(null)
@@ -115,8 +115,8 @@ const AuthenticatedNav = ({ handleDrawerToggle }) => {
               color="inherit"
               onClick={(e) => setAnchorEl(e.currentTarget)}>
               <Avatar
-                alt="Shiyun Lu"
-                src="https://avatars2.githubusercontent.com/u/13009238?s=400&u=84c1659bae3d9b2c5c2974fd1ff561fe74396e5a&v=4"
+                alt={user.name}
+                src={user.picture}
               />
             </IconButton>
             <Menu

@@ -13,19 +13,43 @@ const initialState = teamsAdapter.getInitialState({
   error: null,
 })
 
-export const fetchTeams = createAsyncThunk('teams/fetchTeams', async () => {
-  const response = await teamwork.get('/teams')
-  return response.data.data.map((team) => {
-    const userIds = team.relationships.users.data.map((user) => user.id)
-    return { id: team.id, ...team.attributes, userIds: userIds }
-  })
-})
+export const fetchUserTeams = createAsyncThunk(
+  'teams/fetchUserTeams',
+  async (currentUserId) => {
+    const response = await teamwork.get(`/memberships/${currentUserId}`)
+    return response.data.data.map((membership) => {
+      const lastReadAt = membership.attributes.last_read_at
+      const teamId = membership.relationships.team.data.id
+      const team = response.data.included.find((team) => team.id === teamId)
+      const userIds = team.relationships.users.data.map((user) => user.id)
+      return { id: teamId, ...team.attributes, lastReadAt, userIds }
+    })
+  }
+)
+
+export const fetchTeams = createAsyncThunk(
+  'teams/fetchTeams',
+  async (currentUserId) => {
+    const response = await teamwork.get('/teams')
+    return response.data.data.reduce((result, team) => {
+      const userIds = team.relationships.users.data.map((user) => user.id)
+      if (!userIds.includes(currentUserId)) {
+        result.push({
+          id: team.id,
+          ...team.attributes,
+          userIds,
+        })
+      }
+      return result
+    }, [])
+  }
+)
 
 export const addNewTeam = createAsyncThunk('teams/addNewTeam', async (data) => {
   const response = await teamwork.post('/teams', { team: data })
   const teamData = response.data.data
   const userIds = teamData.relationships.users.data.map((user) => user.id)
-  return { id: teamData.id, ...teamData.attributes, userIds: userIds }
+  return { id: teamData.id, ...teamData.attributes, userIds }
 })
 
 export const updateTeamMember = createAsyncThunk(
@@ -34,7 +58,7 @@ export const updateTeamMember = createAsyncThunk(
     const response = await teamwork.patch(`/teams/${id}`, { team: data })
     const teamData = response.data.data
     const userIds = teamData.relationships.users.data.map((user) => user.id)
-    return { id: teamData.id, ...teamData.attributes, userIds: userIds }
+    return { id: teamData.id, ...teamData.attributes, userIds }
   }
 )
 
@@ -43,16 +67,20 @@ const teamsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchTeams.pending]: (state, action) => {
+    [fetchUserTeams.pending]: (state, action) => {
       state.status = 'loading'
     },
-    [fetchTeams.fulfilled]: (state, action) => {
+    [fetchUserTeams.fulfilled]: (state, action) => {
       state.status = 'succeeded'
-      teamsAdapter.upsertMany(state, action.payload)
+      teamsAdapter.setAll(state, action.payload)
     },
     [fetchTeams.rejected]: (state, action) => {
       state.status = 'failed'
       state.error = action.payload
+    },
+    [fetchTeams.fulfilled]: (state, action) => {
+      state.status = 'succeeded'
+      teamsAdapter.upsertMany(state, action.payload)
     },
     [addNewTeam.fulfilled]: teamsAdapter.addOne,
     [updateTeamMember.fulfilled]: teamsAdapter.upsertOne,

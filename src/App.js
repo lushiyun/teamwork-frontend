@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { useAuth0 } from '@auth0/auth0-react'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { fetchTeams } from './features/teams/teamsSlice'
+import {
+  selectAllUsers,
+  currentUserAdded,
+  addNewUser,
+} from './features/users/usersSlice'
+import { fetchUserTeams } from './features/teams/teamsSlice'
+import { fetchUserAllMessages } from './features/messages/messagesSlice'
 
 import UnauthenticatedNav from './app/UnauthenticatedNav'
 import AuthenticatedNav from './app/AuthenticatedNav'
-import VerticleNav from './app/VerticleNav'
+import VerticalNav from './app/VerticalNav'
 import LandingPage from './app/LandingPage'
 import LoadingBackdrop from './app/LoadingBackdrop'
 import TeamsGrid from './features/teams/TeamsGrid'
 import AuthenticatedRoute from './AuthenticatedRoute'
 import GlobalSnackbar from './ui/GlobalSnackbar'
 import MessagesList from './features/messages/MessagesList'
-import { fetchUsers } from './features/users/usersSlice'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -29,37 +35,54 @@ const useStyles = makeStyles((theme) => ({
 const App = (props) => {
   // helpers for material UI styles
   const classes = useStyles()
-  const { window } = props
   const [open, setOpen] = useState(false)
+  const handleDrawerToggle = () => setOpen(!open)
+  const { window } = props
   const container =
     window !== undefined ? () => window().document.body : undefined
-  const handleDrawerToggle = () => setOpen(!open)
 
-  // initial loading (auth, users, teams)
-  const { isLoading, isAuthenticated } = useAuth0()
+  // initial loading (auth, user teams, user messages)
+  const { isLoading, isAuthenticated, user } = useAuth0()
+
+  const users = useSelector(selectAllUsers)
+  const teamsStatus = useSelector((state) => state.teams.status)
+  const messagesStatus = useSelector((state) => state.messages.status)
 
   const dispatch = useDispatch()
-  const teamsStatus = useSelector((state) => state.teams.status)
-  const teamsError = useSelector((state) => state.teams.error)
-  useEffect(() => {
-    if (teamsStatus === 'idle') {
-      dispatch(fetchTeams())
-    }
-  }, [teamsStatus, dispatch])
 
-  const usersStatus = useSelector((state) => state.users.status)
-  const usersError = useSelector((state) => state.users.error)
   useEffect(() => {
-    if (usersStatus === 'idle') {
-      dispatch(fetchUsers())
-    }
-  }, [usersStatus, dispatch])
+    if (!isAuthenticated) return 
+    const { email, name, picture } = user
+    const existingUser = users.find((user) => user.email === email)
+    if (existingUser) {
+      dispatch(currentUserAdded(existingUser.id))
 
-  if (teamsStatus === 'loading' || usersStatus === 'loading' || isLoading) {
+      const fetchTeamsForUser = async () => {
+        await dispatch(fetchUserTeams(existingUser.id))
+      }
+
+      const fetchMessagesForUser = async () => {
+        await dispatch(fetchUserAllMessages(existingUser.id))
+      }
+
+      fetchTeamsForUser()
+      fetchMessagesForUser()
+    } else {
+      const addCurrentUser = async () => {
+        const resultAction = await dispatch(
+          addNewUser({ email, name, picture_url: picture })
+        )
+        const newUser = unwrapResult(resultAction)
+        dispatch(currentUserAdded(newUser.id))
+      }
+
+      addCurrentUser()
+    }
+  }, [isAuthenticated])
+
+  if (isLoading || teamsStatus === 'loading' || messagesStatus === 'loading') {
     return <LoadingBackdrop />
   }
-
-  // if (teamsStatus === 'error')
 
   return (
     <React.Fragment>
@@ -67,7 +90,7 @@ const App = (props) => {
       {isAuthenticated && (
         <div style={{ display: 'flex' }}>
           <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
-          <VerticleNav
+          <VerticalNav
             handleDrawerToggle={handleDrawerToggle}
             container={container}
             open={open}

@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { Grid, Fab, Tooltip } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { selectAllTeams } from './teamsSlice'
+import { selectAllTeams, fetchTeams } from './teamsSlice'
 import TeamCard from './TeamCard'
 import AddTeamForm from './AddTeamForm'
 
@@ -22,12 +22,20 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const TeamsGrid = () => {
+  // Material UI helpers
   const classes = useStyles()
-  const teams = useSelector(selectAllTeams)
   const [open, setOpen] = useState(false)
-
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  const teams = useSelector(selectAllTeams)
+  const currentUserId = useSelector((state) => state.users.currentUser)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchTeams(currentUserId))
+  }, [currentUserId, dispatch])
 
   const renderedTeamCards = teams.map((team) => (
     <TeamCard team={team} key={team.id} />

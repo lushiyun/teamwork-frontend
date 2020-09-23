@@ -30,6 +30,7 @@ const MessagesList = () => {
   const [channel, setChannel] = useState(null)
   const { teamId } = useParams()
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
+  console.log(messages)
   const currentUserId = useSelector((state) => state.users.currentUser)
 
   const dispatch = useDispatch()

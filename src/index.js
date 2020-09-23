@@ -10,6 +10,9 @@ import App from './App'
 import store from './app/store'
 import theme from './theme'
 import { WS_ROOT } from './api/teamwork'
+import { fetchUsers } from './features/users/usersSlice'
+
+store.dispatch(fetchUsers())
 
 const CableApp = {}
 CableApp.cable = actionCable.createConsumer(WS_ROOT)
