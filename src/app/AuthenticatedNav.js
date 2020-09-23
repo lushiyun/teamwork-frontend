@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
-import { useSelector, useDispatch } from 'react-redux'
-import { unwrapResult } from '@reduxjs/toolkit'
 import { makeStyles } from '@material-ui/core/styles'
 import {
   AppBar,
@@ -16,15 +14,8 @@ import MenuIcon from '@material-ui/icons/Menu'
 import SearchBar from '../ui/SearchBar'
 import Logo from '../ui/Logo'
 import { drawerWidth } from './VerticalNav'
-import {
-  selectAllUsers,
-  currentUserAdded,
-  addNewUser,
-  selectUserById,
-} from '../features/users/usersSlice'
 import AddTeamForm from '../features/teams/AddTeamForm'
 import { Link } from 'react-router-dom'
-import { fetchUserAllMessages } from '../features/messages/messagesSlice'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -54,35 +45,10 @@ const useStyles = makeStyles((theme) => ({
 
 const AuthenticatedNav = ({ handleDrawerToggle }) => {
   const classes = useStyles()
-  const { user, logout } = useAuth0()
-  const users = useSelector(selectAllUsers)
-  const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = useState(null)
   const [open, setOpen] = useState(false)
 
-  // useEffect(() => {
-  //   const { email, name, picture } = user
-  //   const existingUser = users.find((user) => user.email === email)
-  //   if (existingUser) {
-  //     dispatch(currentUserAdded(existingUser.id))
-  //     const fetchMessagesForUser = async () => {
-  //       await dispatch(
-  //         fetchUserAllMessages(existingUser.id)
-  //       )
-  //     }
-  //     fetchMessagesForUser()
-
-  //   } else {
-  //     const addCurrentUser = async () => {
-  //       const resultAction = await dispatch(
-  //         addNewUser({ email, name, picture_url: picture })
-  //       )
-  //       const newUser = unwrapResult(resultAction)
-  //       dispatch(currentUserAdded(newUser.id))
-  //     }
-  //     addCurrentUser()
-  //   }
-  // }, [user])
+  const { user, logout } = useAuth0()
 
   const handleNewTeamClick = () => {
     setAnchorEl(null)

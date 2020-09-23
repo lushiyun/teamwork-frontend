@@ -4,6 +4,7 @@ import {
   createSelector,
   createEntityAdapter,
 } from '@reduxjs/toolkit'
+import { formatISO } from 'date-fns/esm'
 import teamwork from '../../api/teamwork'
 
 const teamsAdapter = createEntityAdapter()
@@ -16,7 +17,7 @@ const initialState = teamsAdapter.getInitialState({
 export const fetchUserTeams = createAsyncThunk(
   'teams/fetchUserTeams',
   async (currentUserId) => {
-    const response = await teamwork.get(`/memberships/${currentUserId}`)
+    const response = await teamwork.get(`/users/${currentUserId}/memberships`)
     return response.data.data.map((membership) => {
       const lastReadAt = membership.attributes.last_read_at
       const teamId = membership.relationships.team.data.id
@@ -62,6 +63,19 @@ export const updateTeamMember = createAsyncThunk(
   }
 )
 
+export const updateTeamLastReadAt = createAsyncThunk(
+  'teams/updateTeamLastReadAt',
+  async ({ teamId, currentUserId }) => {
+    const last_read_at = formatISO(Date.now())
+    const response = await teamwork.patch(`/users/${currentUserId}`, {
+      team_id: teamId,
+      last_read_at,
+    })
+    const lastReadAt = response.data.data.attributes.last_read_at
+    return { id: teamId, lastReadAt }
+  }
+)
+
 const teamsSlice = createSlice({
   name: 'teams',
   initialState,
@@ -84,6 +98,10 @@ const teamsSlice = createSlice({
     },
     [addNewTeam.fulfilled]: teamsAdapter.addOne,
     [updateTeamMember.fulfilled]: teamsAdapter.upsertOne,
+    [updateTeamLastReadAt.fulfilled]: (state, action) => {
+      const { id, ...changes } = action.payload
+      teamsAdapter.updateOne(state, { id, changes })
+    },
   },
 })
 

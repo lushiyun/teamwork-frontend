@@ -4,7 +4,7 @@ import {
   createAsyncThunk,
   createSelector,
 } from '@reduxjs/toolkit'
-import { isAfter } from 'date-fns'
+import { isAfter, parseISO, subYears } from 'date-fns'
 import teamwork from '../../api/teamwork'
 import { selectTeamById } from '../teams/teamsSlice'
 
@@ -18,7 +18,7 @@ const initialState = messagesAdapter.getInitialState({
 export const fetchUserAllMessages = createAsyncThunk(
   'messages/fetchUserAllMessages',
   async (currentUserId) => {
-    const response = await teamwork.get(`/messages/${currentUserId}`)
+    const response = await teamwork.get(`/users/${currentUserId}/messages`)
     return response.data.data.map((message) => {
       const teamId = message.relationships.team.data.id
       const userId = message.relationships.user.data.id
@@ -105,6 +105,10 @@ export const selectMessagesByTeam = createSelector(
 
 export const selectUnreadMessages = createSelector(
   [selectMessagesByTeam, selectTeamById],
-  (messages, team) =>
-    messages.filter((message) => isAfter(team.lastReadAt, message.created_at))
+  (messages, team) => {
+    const lastReadAt = team.lastReadAt || subYears(Date.now(), 1)
+    return messages.filter((message) =>
+      isAfter(parseISO(message.created_at), lastReadAt)
+    )
+  }
 )

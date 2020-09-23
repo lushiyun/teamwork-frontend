@@ -13,6 +13,7 @@ import {
 import { ActionCableContext } from '../../index'
 import MessageItem from './MessageItem'
 import QuillEditor from './QuillEditor'
+import { updateTeamLastReadAt } from '../teams/teamsSlice'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +31,7 @@ const MessagesList = () => {
   const [channel, setChannel] = useState(null)
   const { teamId } = useParams()
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
-  console.log(messages)
+
   const currentUserId = useSelector((state) => state.users.currentUser)
 
   const dispatch = useDispatch()
@@ -42,6 +43,7 @@ const MessagesList = () => {
 
   useEffect(() => {
     dispatch(fetchNewMessages(teamId))
+    dispatch(updateTeamLastReadAt({ teamId, currentUserId }))
   }, [teamId, dispatch])
 
   const cable = useContext(ActionCableContext)

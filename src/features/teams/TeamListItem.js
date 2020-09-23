@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import {
   ListItem,
@@ -15,21 +15,19 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 
 import { ActionCableContext } from '../../index'
-import { selectMessagesByTeam, selectUnreadMessages } from '../messages/messagesSlice'
+import { selectUnreadMessages } from '../messages/messagesSlice'
+import { updateTeamLastReadAt } from './teamsSlice'
 
 const TeamListItem = ({ team, handleMoreIconClick }) => {
   const location = useLocation()
-  const messages = useSelector((state) => selectMessagesByTeam(state, team.id))
+  const originalNumOfUnreads = useSelector((state) =>
+    selectUnreadMessages(state, team.id)
+  ).length
 
   const [fontWeight, setFontWeight] = useState('fontWeightRegular')
-  const [numOfUnreads, setNumOfUnreads] = useState(messages.length)
+  const [numOfUnreads, setNumOfUnreads] = useState(originalNumOfUnreads)
 
-  console.log(messages)
-  console.log(numOfUnreads)
-
-  // useEffect(() => {
-  //   setNumOfUnreads(messages.length)
-  // }, [])
+  const dispatch = useDispatch()
 
   const cable = useContext(ActionCableContext)
   useEffect(() => {
