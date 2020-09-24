@@ -88,14 +88,11 @@ const teamsSlice = createSlice({
       state.status = 'succeeded'
       teamsAdapter.setAll(state, action.payload)
     },
-    [fetchTeams.rejected]: (state, action) => {
+    [fetchUserTeams.rejected]: (state, action) => {
       state.status = 'failed'
       state.error = action.payload
     },
-    [fetchTeams.fulfilled]: (state, action) => {
-      state.status = 'succeeded'
-      teamsAdapter.upsertMany(state, action.payload)
-    },
+    [fetchTeams.fulfilled]: teamsAdapter.upsertMany,
     [addNewTeam.fulfilled]: teamsAdapter.addOne,
     [updateTeamMember.fulfilled]: teamsAdapter.upsertOne,
     [updateTeamLastReadAt.fulfilled]: (state, action) => {

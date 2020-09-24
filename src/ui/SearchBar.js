@@ -1,7 +1,11 @@
-import React from 'react'
-import { fade, makeStyles } from '@material-ui/core/styles'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { InputBase } from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 import SearchIcon from '@material-ui/icons/Search'
-import InputBase from '@material-ui/core/InputBase'
+import { fade, makeStyles } from '@material-ui/core/styles'
+import { selectTeamsByUser } from '../features/teams/teamsSlice'
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -42,19 +46,41 @@ const useStyles = makeStyles((theme) => ({
 
 const SearchBar = () => {
   const classes = useStyles()
+  const history = useHistory()
+  const [value, setValue] = useState(null)
+
+  const currentUserId = useSelector((state) => state.users.currentUser)
+  const userTeams = useSelector((state) =>
+    selectTeamsByUser(state, currentUserId)
+  )
+
+  const handleChange = (e, newValue) => {
+    history.push(`/teams/${newValue.id}`)
+    setValue(newValue)
+  }
 
   return (
     <div className={classes.search}>
       <div className={classes.searchIcon}>
         <SearchIcon />
       </div>
-      <InputBase
-        placeholder="Search…"
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
+      <Autocomplete
+        value={value}
+        onChange={(e, newValue) => {
+          handleChange(e, newValue)
         }}
-        inputProps={{ 'aria-label': 'search' }}
+        options={userTeams}
+        getOptionLabel={(option) => option.name}
+        style={{ width: 300 }}
+        renderInput={(params) => (
+          <div ref={params.InputProps.ref}>
+            <InputBase
+              {...params.inputProps}
+              placeholder="Search your teams..."
+              classes={{ root: classes.inputRoot, input: classes.inputInput }}
+            />
+          </div>
+        )}
       />
     </div>
   )
