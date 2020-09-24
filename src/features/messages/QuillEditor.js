@@ -37,9 +37,10 @@ const QuillEditor = ({ sendMessage, teamId }) => {
   const team = useSelector((state) => selectTeamById(state, teamId))
 
   useEffect(() => {
+    if (!team) return
     const editor = quillRef.current.getEditor()
     editor.root.dataset.placeholder = `Message #${team.name}`
-  }, [team.name])
+  }, [team])
 
   const handleClick = () => {
     const editor = quillRef.current.getEditor()

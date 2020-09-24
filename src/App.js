@@ -108,11 +108,16 @@ const App = (props) => {
             <AuthenticatedRoute exact path="/dashboard" component={Dashboard} />
             <AuthenticatedRoute exact path="/teams" component={TeamsGrid} />
             <AuthenticatedRoute
+              exact
               path="/teams/:teamId"
               children={<MessagesList />}
             />
+            {isAuthenticated ? (
+              <Redirect from="*" to="/teams" />
+            ) : (
+              <Redirect from="*" to="/" />
+            )}
           </Switch>
-          {isAuthenticated ? <Redirect to="/teams" /> : <Redirect to="/" />}
         </main>
       </div>
     </React.Fragment>
