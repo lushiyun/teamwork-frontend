@@ -22,6 +22,7 @@ import TeamsGrid from './features/teams/TeamsGrid'
 import AuthenticatedRoute from './AuthenticatedRoute'
 import GlobalSnackbar from './ui/GlobalSnackbar'
 import MessagesList from './features/messages/MessagesList'
+import Dashboard from './app/Dashboard'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -51,7 +52,7 @@ const App = (props) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!isAuthenticated) return 
+    if (!isAuthenticated) return
     const { email, name, picture } = user
     const existingUser = users.find((user) => user.email === email)
     if (existingUser) {
@@ -87,30 +88,33 @@ const App = (props) => {
   return (
     <React.Fragment>
       <GlobalSnackbar />
-      {isAuthenticated && (
-        <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex' }}>
+        {isAuthenticated ? (
           <AuthenticatedNav handleDrawerToggle={handleDrawerToggle} />
+        ) : (
+          <UnauthenticatedNav />
+        )}
+        {isAuthenticated && (
           <VerticalNav
             handleDrawerToggle={handleDrawerToggle}
             container={container}
             open={open}
           />
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
-            <Switch>
-              <Route exact path="/teams" component={TeamsGrid} />
-              <Route path="/teams/:teamId" children={<MessagesList />} />
-            </Switch>
-          </main>
-        </div>
-      )}
-
-      {!isAuthenticated && (
-        <div style={{ height: '100vh' }}>
-          <UnauthenticatedNav />
-          <Route exact path="/" component={LandingPage} />
-        </div>
-      )}
+        )}
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <Switch>
+            <Route exact path="/" component={LandingPage} />
+            <AuthenticatedRoute exact path="/dashboard" component={Dashboard} />
+            <AuthenticatedRoute exact path="/teams" component={TeamsGrid} />
+            <AuthenticatedRoute
+              path="/teams/:teamId"
+              children={<MessagesList />}
+            />
+          </Switch>
+          {/* {isAuthenticated ? <Redirect to="/teams" /> : <Redirect to="/" />} */}
+        </main>
+      </div>
     </React.Fragment>
   )
 }

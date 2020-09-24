@@ -42,8 +42,9 @@ const MessagesList = () => {
   }, [messages])
 
   useEffect(() => {
-    dispatch(fetchNewMessages(teamId))
-    dispatch(updateTeamLastReadAt({ teamId, currentUserId }))
+    return () => {
+      dispatch(updateTeamLastReadAt({ teamId, currentUserId }))
+    }
   }, [teamId, dispatch])
 
   const cable = useContext(ActionCableContext)
@@ -79,7 +80,7 @@ const MessagesList = () => {
   return (
     <Container maxWidth="md" className={classes.root}>
       <List className={classes.msgList}>{renderedMessages}</List>
-      <QuillEditor sendMessage={sendMessage} />
+      <QuillEditor sendMessage={sendMessage} teamId={teamId} />
       <div ref={endRef} />
     </Container>
   )

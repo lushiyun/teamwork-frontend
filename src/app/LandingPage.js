@@ -10,7 +10,11 @@ import SignupButton from '../features/users/SignupButton'
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
     height: '100vh',
+    width: '100vw',
   },
   title: {
     fontFamily: 'Display Fair, serif',

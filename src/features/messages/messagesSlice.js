@@ -63,13 +63,9 @@ const messagesSlice = createSlice({
         teamId: data.relationships.team.data.id,
         userId: data.relationships.user.data.id,
       }
+      console.log(message)
       messagesAdapter.addOne(state, message)
     },
-    // allMessagesRead(state, action) {
-    //   Object.values(state.entities).forEach((message) => {
-    //     message.read = true
-    //   })
-    // },
   },
   extraReducers: {
     [fetchUserAllMessages.pending]: (state, action) => {
@@ -106,7 +102,7 @@ export const selectMessagesByTeam = createSelector(
 export const selectUnreadMessages = createSelector(
   [selectMessagesByTeam, selectTeamById],
   (messages, team) => {
-    const lastReadAt = team.lastReadAt || subYears(Date.now(), 1)
+    const lastReadAt = parseISO(team.lastReadAt) || subYears(Date.now(), 1)
     return messages.filter((message) =>
       isAfter(parseISO(message.created_at), lastReadAt)
     )

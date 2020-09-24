@@ -63,3 +63,8 @@ export const selectUsersByTeam = createSelector(
   [selectAllUsers, selectTeamById],
   (users, team) => users.filter((user) => team.userIds.includes(user.id))
 )
+
+export const selectCurrentUserName = createSelector(
+  [selectUserById],
+  (user) => user.name
+)

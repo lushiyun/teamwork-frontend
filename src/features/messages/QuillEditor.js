@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import ReactQuill, { Quill } from 'react-quill'
 import quillEmoji from 'quill-emoji'
@@ -8,6 +8,8 @@ import 'quill-emoji/dist/quill-emoji.css'
 import { Paper, IconButton } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
 import { makeStyles } from '@material-ui/core/styles'
+import { useSelector } from 'react-redux'
+import { selectTeamById } from '../teams/teamsSlice'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,16 +33,6 @@ const style = {
   maxWidth: 'calc(100% - 80px)',
 }
 
-Quill.register(
-  {
-    'formats/emoji': quillEmoji.EmojiBlot,
-    'modules/emoji-toolbar': quillEmoji.ToolbarEmoji,
-    'modules/emoji-textarea': quillEmoji.TextAreaEmoji,
-    'modules/emoji-shortname': quillEmoji.ShortNameEmoji,
-  },
-  true
-)
-
 const modules = {
   toolbar: [
     ['bold', 'italic', 'underline', 'strike', 'link'],
@@ -60,10 +52,27 @@ const modules = {
   'emoji-shortname': true,
 }
 
-const QuillEditor = ({ sendMessage }) => {
+Quill.register(
+  {
+    'formats/emoji': quillEmoji.EmojiBlot,
+    'modules/emoji-toolbar': quillEmoji.ToolbarEmoji,
+    'modules/emoji-textarea': quillEmoji.TextAreaEmoji,
+    'modules/emoji-shortname': quillEmoji.ShortNameEmoji,
+  },
+  true
+)
+
+const QuillEditor = ({ sendMessage, teamId }) => {
   const classes = useStyles()
   const [value, setValue] = useState('')
   const quillRef = useRef(null)
+
+  const team = useSelector((state) => selectTeamById(state, teamId))
+
+  useEffect(() => {
+    const editor = quillRef.current.getEditor()
+    editor.root.dataset.placeholder = `Message #${team.name}`
+  }, [teamId])
 
   const handleClick = () => {
     const editor = quillRef.current.getEditor()

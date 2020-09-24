@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { isAfter, parseISO, subYears } from 'date-fns'
 
 import {
   ListItem,
@@ -15,30 +16,43 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 
 import { ActionCableContext } from '../../index'
-import { selectUnreadMessages } from '../messages/messagesSlice'
-import { updateTeamLastReadAt } from './teamsSlice'
+import {
+  selectUnreadMessages,
+  messageReceived,
+  selectMessagesByTeam,
+} from '../messages/messagesSlice'
 
 const TeamListItem = ({ team, handleMoreIconClick }) => {
   const location = useLocation()
-  const originalNumOfUnreads = useSelector((state) =>
+
+  const numOfUnreads = useSelector((state) =>
     selectUnreadMessages(state, team.id)
   ).length
 
-  const [fontWeight, setFontWeight] = useState('fontWeightRegular')
-  const [numOfUnreads, setNumOfUnreads] = useState(originalNumOfUnreads)
+  const getFontWeight = () => {
+    if (location.pathname.slice(7) === team.id) {
+      return 'fontWeightRegular'
+    }
+    return numOfUnreads === 0 ? 'fontWeightRegular' : 'fontWeightBold'
+  }
+
+  const renderedNumOfUnreads = () => {
+    if (location.pathname.slice(7) === team.id) {
+      return 0
+    }
+    return numOfUnreads
+  }
 
   const dispatch = useDispatch()
 
   const cable = useContext(ActionCableContext)
   useEffect(() => {
+    if (location.pathname.slice(7) === team.id) return
     const channel = cable.subscriptions.create(
-      { channel: 'UnreadsChannel', id: team.id },
+      { channel: 'MessagesChannel', id: team.id },
       {
-        received: () => {
-          if (window.location.pathname.slice(7) !== team.id) {
-            setFontWeight('fontWeightBold')
-            setNumOfUnreads((prev) => prev + 1)
-          }
+        received: (data) => {
+          dispatch(messageReceived(JSON.parse(data)))
         },
       }
     )
@@ -47,20 +61,13 @@ const TeamListItem = ({ team, handleMoreIconClick }) => {
     }
   }, [team])
 
-  useEffect(() => {
-    if (location.pathname.slice(7) === team.id) {
-      setFontWeight('fontWeightRegular')
-      setNumOfUnreads(0)
-    }
-  }, [location])
-
   return (
     <ListItem
       component={Link}
       to={`/teams/${team.id}`}
       button
       selected={location.pathname.slice(7) === team.id}>
-      <Badge badgeContent={numOfUnreads} color="primary">
+      <Badge badgeContent={renderedNumOfUnreads()} color="primary">
         <Avatar
           variant="rounded"
           src={team.cover_url}
@@ -71,7 +78,7 @@ const TeamListItem = ({ team, handleMoreIconClick }) => {
       <ListItemText
         primary={
           <Typography>
-            <Box fontWeight={fontWeight}>{team.name}</Box>
+            <Box fontWeight={getFontWeight()}>{team.name}</Box>
           </Typography>
         }
       />
