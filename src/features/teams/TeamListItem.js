@@ -30,19 +30,15 @@ const TeamListItem = ({ team, handleMoreIconClick }) => {
   ).length
 
   useEffect(() => {
-    if (location.pathname.slice(7) === team.id) return
     const channel = cable.subscriptions.create(
-      { channel: 'MessagesChannel', id: team.id },
+      { channel: 'UnreadsChannel', id: team.id },
       {
         received: (data) => {
           dispatch(messageReceived(JSON.parse(data)))
         },
       }
     )
-    return () => {
-      channel.unsubscribe()
-    }
-  }, [team.id, cable.subscriptions, location.pathname, dispatch])
+  }, [team])
 
   const getFontWeight = () => {
     if (location.pathname.slice(7) === team.id) {
