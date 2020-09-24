@@ -1,8 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
+import { makeStyles } from '@material-ui/core/styles'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
-import { makeStyles } from '@material-ui/core/styles'
 
 import { setSnackbar } from './snackbarSlice'
 
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const GlobalSnackbar = () => {
   const classes = useStyles()
+  
   const dispatch = useDispatch()
   const open = useSelector((state) => state.snackbar.open)
   const type = useSelector((state) => state.snackbar.type)

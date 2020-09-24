@@ -17,7 +17,6 @@ import { makeStyles } from '@material-ui/core'
 import { updateTeamMember } from './teamsSlice'
 import { setSnackbar } from '../../ui/snackbarSlice'
 import TeamShowPage from './TeamShowPage'
-import textTruncate from '../../ui/textTruncate'
 
 const useStyles = makeStyles((theme) => ({
   teamCard: {
@@ -28,8 +27,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const textTruncate = (str, num) => {
+  if (str.length > num) {
+    return str.slice(0, num) + '...'
+  }
+  return str
+}
+
 const TeamCard = ({ team }) => {
   const classes = useStyles()
+  
   const [open, setOpen] = useState(false)
   const handleClickOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)

@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+
+import { fade, makeStyles } from '@material-ui/core/styles'
 import { InputBase } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import SearchIcon from '@material-ui/icons/Search'
-import { fade, makeStyles } from '@material-ui/core/styles'
+
 import { selectTeamsByUser } from '../features/teams/teamsSlice'
 
 const useStyles = makeStyles((theme) => ({

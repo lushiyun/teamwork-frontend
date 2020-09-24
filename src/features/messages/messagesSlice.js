@@ -5,6 +5,7 @@ import {
   createSelector,
 } from '@reduxjs/toolkit'
 import { isAfter, parseISO, subYears } from 'date-fns'
+
 import teamwork from '../../api/teamwork'
 import { selectTeamById } from '../teams/teamsSlice'
 
@@ -32,25 +33,6 @@ export const fetchUserAllMessages = createAsyncThunk(
   }
 )
 
-export const fetchNewMessages = createAsyncThunk(
-  'messages/fetchNewMessages',
-  async (teamId, { getState }) => {
-    const messages = selectMessagesByTeam(getState(), teamId)
-    const [latestMessage] = messages
-    const datetime = latestMessage ? latestMessage.created_at : ''
-    const response = await teamwork.get(`/teams/${teamId}/${datetime}`)
-    return response.data.data.map((message) => {
-      const userId = message.relationships.user.data.id
-      return {
-        id: message.id,
-        ...message.attributes,
-        teamId,
-        userId,
-      }
-    })
-  }
-)
-
 const messagesSlice = createSlice({
   name: 'messages',
   initialState,
@@ -63,7 +45,6 @@ const messagesSlice = createSlice({
         teamId: data.relationships.team.data.id,
         userId: data.relationships.user.data.id,
       }
-      console.log(message)
       messagesAdapter.addOne(state, message)
     },
   },
@@ -79,9 +60,6 @@ const messagesSlice = createSlice({
       state.status = 'failed'
       state.error = action.payload
     },
-    [fetchNewMessages.fulfilled]: (state, action) => {
-      messagesAdapter.upsertMany(state, action.payload)
-    },
   },
 })
 
@@ -89,10 +67,9 @@ export const { messageReceived } = messagesSlice.actions
 
 export default messagesSlice.reducer
 
-export const {
-  selectAll: selectAllMessages,
-  selectById: selectMessageById,
-} = messagesAdapter.getSelectors((state) => state.messages)
+export const { selectAll: selectAllMessages } = messagesAdapter.getSelectors(
+  (state) => state.messages
+)
 
 export const selectMessagesByTeam = createSelector(
   [selectAllMessages, (state, teamId) => teamId],

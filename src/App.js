@@ -112,7 +112,7 @@ const App = (props) => {
               children={<MessagesList />}
             />
           </Switch>
-          {/* {isAuthenticated ? <Redirect to="/teams" /> : <Redirect to="/" />} */}
+          {isAuthenticated ? <Redirect to="/teams" /> : <Redirect to="/" />}
         </main>
       </div>
     </React.Fragment>

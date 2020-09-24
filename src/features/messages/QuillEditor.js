@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 import ReactQuill, { Quill } from 'react-quill'
 import quillEmoji from 'quill-emoji'
 import 'react-quill/dist/quill.snow.css'
 import 'quill-emoji/dist/quill-emoji.css'
 
+import { makeStyles } from '@material-ui/core/styles'
 import { Paper, IconButton } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
-import { makeStyles } from '@material-ui/core/styles'
-import { useSelector } from 'react-redux'
+
 import { selectTeamById } from '../teams/teamsSlice'
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +28,41 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }))
+
+const QuillEditor = ({ sendMessage, teamId }) => {
+  const classes = useStyles()
+  const [value, setValue] = useState('')
+  const quillRef = useRef(null)
+
+  const team = useSelector((state) => selectTeamById(state, teamId))
+
+  useEffect(() => {
+    const editor = quillRef.current.getEditor()
+    editor.root.dataset.placeholder = `Message #${team.name}`
+  }, [team.name])
+
+  const handleClick = () => {
+    const editor = quillRef.current.getEditor()
+    sendMessage(JSON.stringify(editor.getContents()))
+    setValue('')
+  }
+
+  return (
+    <Paper variant="outlined" className={classes.root}>
+      <ReactQuill
+        theme="snow"
+        value={value}
+        onChange={setValue}
+        modules={modules}
+        ref={quillRef}
+        style={style}
+      />
+      <IconButton color="primary" onClick={handleClick}>
+        <SendIcon />
+      </IconButton>
+    </Paper>
+  )
+}
 
 const style = {
   flexGrow: 1,
@@ -61,40 +97,5 @@ Quill.register(
   },
   true
 )
-
-const QuillEditor = ({ sendMessage, teamId }) => {
-  const classes = useStyles()
-  const [value, setValue] = useState('')
-  const quillRef = useRef(null)
-
-  const team = useSelector((state) => selectTeamById(state, teamId))
-
-  useEffect(() => {
-    const editor = quillRef.current.getEditor()
-    editor.root.dataset.placeholder = `Message #${team.name}`
-  }, [teamId])
-
-  const handleClick = () => {
-    const editor = quillRef.current.getEditor()
-    sendMessage(JSON.stringify(editor.getContents()))
-    setValue('')
-  }
-
-  return (
-    <Paper variant="outlined" className={classes.root}>
-      <ReactQuill
-        theme="snow"
-        value={value}
-        onChange={setValue}
-        modules={modules}
-        ref={quillRef}
-        style={style}
-      />
-      <IconButton color="primary" onClick={handleClick}>
-        <SendIcon />
-      </IconButton>
-    </Paper>
-  )
-}
 
 export default QuillEditor

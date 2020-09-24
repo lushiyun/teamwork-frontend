@@ -23,6 +23,7 @@ const stepTitles = ['Some quick details', 'Select a cover', 'Add team members']
 
 const AddTeamForm = ({ open, handleClose }) => {
   const currentUserId = useSelector((state) => state.users.currentUser)
+
   const [activeStep, setActiveStep] = useState(0)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -50,11 +51,6 @@ const AddTeamForm = ({ open, handleClose }) => {
     setDescription('')
     setCover('')
     setMembers([])
-  }
-
-  const handleDialogClose = () => {
-    resetForm()
-    handleClose()
   }
 
   const dispatch = useDispatch()
@@ -106,11 +102,18 @@ const AddTeamForm = ({ open, handleClose }) => {
             handleMemberChange={handleMemberChange}
           />
         )
+      default:
+        return null
     }
   }
 
   return (
-    <Dialog open={open} onClose={handleDialogClose}>
+    <Dialog
+      open={open}
+      onClose={() => {
+        resetForm()
+        handleClose()
+      }}>
       <DialogTitle>Create your team</DialogTitle>
       <DialogContent>
         <Stepper activeStep={activeStep}>

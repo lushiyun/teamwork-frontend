@@ -10,9 +10,10 @@ import { setSnackbar } from '../../ui/snackbarSlice'
 
 const TeamsListMenu = (props) => {
   const { clickedTeam, anchorEl, setAnchorEl, setOpen } = props
-  const currentUserId = useSelector((state) => state.users.currentUser)
-  const history = useHistory()
 
+  const currentUserId = useSelector((state) => state.users.currentUser)
+
+  const history = useHistory()
   const dispatch = useDispatch()
 
   const [leaveRequestStatus, setLeaveRequestStatus] = useState('idle')

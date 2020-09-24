@@ -1,9 +1,9 @@
 import React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
 
-import LoginButton from '../features/users/LoginButton'
+import { AppBar, Toolbar } from '@material-ui/core'
+
 import Logo from '../ui/Logo'
+import LoginButton from '../features/users/LoginButton'
 
 const UnauthenticatedNav = () => (
   <AppBar position="fixed" elevation={0} color="transparent">

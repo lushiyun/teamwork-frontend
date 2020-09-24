@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TeamMembersStep = ({ members, handleMemberChange }) => {
   const classes = useStyles()
+  
   const allUsers = useSelector(selectAllUsers)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
@@ -44,7 +45,7 @@ const TeamMembersStep = ({ members, handleMemberChange }) => {
         )
       : allUsers
     setResults(searchedUsers)
-  }, [query])
+  }, [query, allUsers])
 
   const renderedUsers = results.map((user) => (
     <Grid item key={user.id} className={classes.gridItem}>

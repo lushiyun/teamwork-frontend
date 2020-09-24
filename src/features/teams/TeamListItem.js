@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { isAfter, parseISO, subYears } from 'date-fns'
 
 import {
   ListItem,
@@ -19,15 +18,31 @@ import { ActionCableContext } from '../../index'
 import {
   selectUnreadMessages,
   messageReceived,
-  selectMessagesByTeam,
 } from '../messages/messagesSlice'
 
 const TeamListItem = ({ team, handleMoreIconClick }) => {
   const location = useLocation()
+  const dispatch = useDispatch()
+  const cable = useContext(ActionCableContext)
 
   const numOfUnreads = useSelector((state) =>
     selectUnreadMessages(state, team.id)
   ).length
+
+  useEffect(() => {
+    if (location.pathname.slice(7) === team.id) return
+    const channel = cable.subscriptions.create(
+      { channel: 'MessagesChannel', id: team.id },
+      {
+        received: (data) => {
+          dispatch(messageReceived(JSON.parse(data)))
+        },
+      }
+    )
+    return () => {
+      channel.unsubscribe()
+    }
+  }, [team.id, cable.subscriptions, location.pathname, dispatch])
 
   const getFontWeight = () => {
     if (location.pathname.slice(7) === team.id) {
@@ -42,24 +57,6 @@ const TeamListItem = ({ team, handleMoreIconClick }) => {
     }
     return numOfUnreads
   }
-
-  const dispatch = useDispatch()
-
-  const cable = useContext(ActionCableContext)
-  useEffect(() => {
-    if (location.pathname.slice(7) === team.id) return
-    const channel = cable.subscriptions.create(
-      { channel: 'MessagesChannel', id: team.id },
-      {
-        received: (data) => {
-          dispatch(messageReceived(JSON.parse(data)))
-        },
-      }
-    )
-    return () => {
-      channel.unsubscribe()
-    }
-  }, [team])
 
   return (
     <ListItem

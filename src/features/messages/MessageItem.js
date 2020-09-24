@@ -25,12 +25,7 @@ const MessageItem = ({ message }) => {
   }
 
   return (
-    <ListItem
-      alignItems="flex-start"
-      divider
-      style={{
-        backgroundColor: `${message.isNew ? 'rgba(179, 193, 0, 0.3)' : 'transparent'}`,
-      }}>
+    <ListItem alignItems="flex-start" divider>
       <ListItemAvatar>
         <Avatar alt={user.name} src={user.picture_url} />
       </ListItemAvatar>

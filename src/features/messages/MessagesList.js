@@ -1,19 +1,15 @@
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import QuillEditor from './QuillEditor'
 
 import { List, Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import {
-  fetchNewMessages,
-  selectMessagesByTeam,
-  messageReceived,
-} from './messagesSlice'
+import { selectMessagesByTeam, messageReceived } from './messagesSlice'
+import { updateTeamLastReadAt } from '../teams/teamsSlice'
 import { ActionCableContext } from '../../index'
 import MessageItem from './MessageItem'
-import QuillEditor from './QuillEditor'
-import { updateTeamLastReadAt } from '../teams/teamsSlice'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,15 +24,17 @@ const useStyles = makeStyles((theme) => ({
 
 const MessagesList = () => {
   const classes = useStyles()
-  const [channel, setChannel] = useState(null)
+
   const { teamId } = useParams()
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
-
   const currentUserId = useSelector((state) => state.users.currentUser)
+
+  const cable = useContext(ActionCableContext)
+  const [channel, setChannel] = useState(null)
+  const endRef = useRef(null)
 
   const dispatch = useDispatch()
 
-  const endRef = useRef(null)
   useEffect(() => {
     endRef.current.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
@@ -45,9 +43,8 @@ const MessagesList = () => {
     return () => {
       dispatch(updateTeamLastReadAt({ teamId, currentUserId }))
     }
-  }, [teamId, dispatch])
+  }, [teamId, currentUserId, dispatch])
 
-  const cable = useContext(ActionCableContext)
   useEffect(() => {
     const channel = cable.subscriptions.create(
       {
@@ -64,7 +61,7 @@ const MessagesList = () => {
     return () => {
       channel.unsubscribe()
     }
-  }, [teamId])
+  }, [teamId, cable.subscriptions, dispatch])
 
   const sendMessage = (content) => {
     const data = { teamId, userId: currentUserId, content }

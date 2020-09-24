@@ -9,7 +9,7 @@ export default configureStore({
   reducer: {
     users: usersReducer,
     teams: teamsReducer,
-    snackbar: snackbarReducer,
     messages: messagesReducer,
+    snackbar: snackbarReducer,
   },
 })

@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
+
 import { makeStyles } from '@material-ui/core/styles'
 import {
   AppBar,
@@ -11,11 +13,11 @@ import {
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 
-import SearchBar from '../ui/SearchBar'
+import SearchBar from './SearchBar'
 import Logo from '../ui/Logo'
-import { drawerWidth } from './VerticalNav'
 import AddTeamForm from '../features/teams/AddTeamForm'
-import { Link } from 'react-router-dom'
+import { drawerWidth } from './VerticalNav'
+
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

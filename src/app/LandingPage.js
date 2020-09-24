@@ -1,9 +1,7 @@
 import React from 'react'
+
 import { makeStyles } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
+import { Grid, Typography, Button, Box } from '@material-ui/core'
 
 import introPhoto from './Work-together.png'
 import SignupButton from '../features/users/SignupButton'
@@ -49,7 +47,9 @@ const LandingPage = () => {
     <Grid container component="main" className={classes.root} spacing={0}>
       <Grid container item xs={12} sm={6} direction="column" justify="center">
         <Box maxWidth="450px" alignSelf="center">
-          <Typography variant="h2" className={classes.title}>Team Work</Typography>
+          <Typography variant="h2" className={classes.title}>
+            Team Work
+          </Typography>
           <Typography variant="h4" className={classes.introTitle}>
             Makes the Dream Work
           </Typography>

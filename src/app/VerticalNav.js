@@ -1,6 +1,8 @@
 import React from 'react'
+
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { Hidden, Drawer, Typography, Link, Toolbar } from '@material-ui/core'
+
 import TeamsList from '../features/teams/TeamsList'
 
 export const drawerWidth = 300

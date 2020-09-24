@@ -5,6 +5,7 @@ import {
   createEntityAdapter,
 } from '@reduxjs/toolkit'
 import { formatISO } from 'date-fns/esm'
+
 import teamwork from '../../api/teamwork'
 
 const teamsAdapter = createEntityAdapter()
