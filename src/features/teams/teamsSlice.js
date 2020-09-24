@@ -106,6 +106,7 @@ const teamsSlice = createSlice({
 export default teamsSlice.reducer
 
 export const {
+  selectIds: selectTeamIds,
   selectAll: selectAllTeams,
   selectById: selectTeamById,
 } = teamsAdapter.getSelectors((state) => state.teams)

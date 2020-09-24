@@ -112,15 +112,16 @@ const App = (props) => {
               path="/teams/:teamId"
               children={<MessagesList />}
             />
-            {isAuthenticated ? (
+            {/* {isAuthenticated ? (
               <Redirect from="*" to="/teams" />
             ) : (
               <Redirect from="*" to="/" />
-            )}
+            )} */}
           </Switch>
         </main>
       </div>
     </React.Fragment>
+    // 404 route instead of redirect 
   )
 }
 

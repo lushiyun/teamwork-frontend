@@ -56,6 +56,8 @@ const SearchBar = () => {
     selectTeamsByUser(state, currentUserId)
   )
 
+  // search for messages
+  // add another property - allteams boolean
   const handleChange = (e, newValue) => {
     history.push(`/teams/${newValue.id}`)
     setValue(newValue)

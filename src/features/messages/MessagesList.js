@@ -1,13 +1,13 @@
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import QuillEditor from './QuillEditor'
 
 import { List, Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { selectMessagesByTeam, messageReceived } from './messagesSlice'
-import { updateTeamLastReadAt } from '../teams/teamsSlice'
+import { selectTeamIds, updateTeamLastReadAt } from '../teams/teamsSlice'
 import { ActionCableContext } from '../../index'
 import MessageItem from './MessageItem'
 
@@ -24,8 +24,11 @@ const useStyles = makeStyles((theme) => ({
 
 const MessagesList = () => {
   const classes = useStyles()
+  const history = useHistory()
 
   const { teamId } = useParams()
+  const teamIds = useSelector(selectTeamIds)
+  
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
   const currentUserId = useSelector((state) => state.users.currentUser)
 
@@ -73,6 +76,10 @@ const MessagesList = () => {
     messages.map((message) => (
       <MessageItem key={message.id} message={message} />
     ))
+
+  if (!teamIds.includes(teamId)) {
+    history.push('/teams')
+  }
 
   return (
     <Container maxWidth="md" className={classes.root}>
