@@ -6,7 +6,7 @@ import QuillEditor from './QuillEditor'
 import { List, Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { selectMessagesByTeam, messageReceived } from './messagesSlice'
+import { selectMessagesByTeam } from './messagesSlice'
 import { selectTeamIds, updateTeamLastReadAt } from '../teams/teamsSlice'
 import { ActionCableContext } from '../../index'
 import MessageItem from './MessageItem'
@@ -28,7 +28,7 @@ const MessagesList = () => {
 
   const { teamId } = useParams()
   const teamIds = useSelector(selectTeamIds)
-  
+
   const messages = useSelector((state) => selectMessagesByTeam(state, teamId))
   const currentUserId = useSelector((state) => state.users.currentUser)
 
@@ -49,17 +49,10 @@ const MessagesList = () => {
   }, [teamId, currentUserId, dispatch])
 
   useEffect(() => {
-    const channel = cable.subscriptions.create(
-      {
-        channel: 'MessagesChannel',
-        id: teamId,
-      },
-      {
-        received: (data) => {
-          dispatch(messageReceived(JSON.parse(data)))
-        },
-      }
-    )
+    const channel = cable.subscriptions.create({
+      channel: 'MessagesChannel',
+      id: teamId,
+    })
     setChannel(channel)
     return () => {
       channel.unsubscribe()

@@ -30,8 +30,8 @@ const TeamListItem = ({ team, handleMoreIconClick }) => {
   ).length
 
   useEffect(() => {
-    const channel = cable.subscriptions.create(
-      { channel: 'UnreadsChannel', id: team.id },
+    cable.subscriptions.create(
+      { channel: 'MessagesChannel', id: team.id },
       {
         received: (data) => {
           dispatch(messageReceived(JSON.parse(data)))
