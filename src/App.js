@@ -116,7 +116,6 @@ const App = (props) => {
         </main>
       </div>
     </React.Fragment>
-    // 404 route instead of redirect 
   )
 }
 
