@@ -69,9 +69,15 @@ const LandingPage = () => {
               <SignupButton />
             </Grid>
             <Grid item>
-              <Button size="large" variant="contained" color="primary">
-                Watch the Demo
-              </Button>
+              <a
+                href="https://youtu.be/-zL5NooatJI"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none' }}>
+                <Button size="large" variant="contained" color="primary">
+                  Watch the Demo
+                </Button>
+              </a>
             </Grid>
           </Grid>
         </Box>
