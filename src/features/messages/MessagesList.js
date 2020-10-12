@@ -57,7 +57,7 @@ const MessagesList = () => {
     return () => {
       channel.unsubscribe()
     }
-  }, [teamId, dispatch])
+  }, [teamId, dispatch, cable.subscriptions])
 
   const sendMessage = (content) => {
     const data = { teamId, userId: currentUserId, content }

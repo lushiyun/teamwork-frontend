@@ -38,7 +38,7 @@ const TeamListItem = ({ team, handleMoreIconClick }) => {
         },
       }
     )
-  }, [team])
+  }, [team, cable.subscriptions, dispatch])
 
   const getFontWeight = () => {
     if (location.pathname.slice(7) === team.id) {

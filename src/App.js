@@ -79,7 +79,7 @@ const App = (props) => {
 
       addCurrentUser()
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, dispatch, user, users])
 
   if (isLoading || teamsStatus === 'loading' || messagesStatus === 'loading') {
     return <LoadingBackdrop />
