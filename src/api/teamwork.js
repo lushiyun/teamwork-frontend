@@ -1,11 +1,11 @@
 import axios from 'axios'
 
 export default axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'https://teamwork-server.herokuapp.com',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
 })
 
-export const WS_ROOT = 'ws://localhost:3000/cable'
+export const WS_ROOT = 'wss://teamwork-server.herokuapp.com/cable'

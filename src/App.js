@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useAuth0 } from '@auth0/auth0-react'
@@ -112,11 +112,6 @@ const App = (props) => {
               path="/teams/:teamId"
               children={<MessagesList />}
             />
-            {/* {isAuthenticated ? (
-              <Redirect from="*" to="/teams" />
-            ) : (
-              <Redirect from="*" to="/" />
-            )} */}
           </Switch>
         </main>
       </div>
